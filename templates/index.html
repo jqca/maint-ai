@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MaintAI — AI予知保全システム</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:      #f0f4f8;
+      --surface: #ffffff;
+      --navy:    #0f172a;
+      --blue:    #2563eb;
+      --teal:    #0891b2;
+      --text:    #0f172a;
+      --text-2:  #475569;
+      --text-3:  #94a3b8;
+      --border:  #e2e8f0;
+      --green:   #059669;
+      --amber:   #d97706;
+      --red:     #dc2626;
+      --shadow:  0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Header ── */
+    .header {
+      background: var(--navy);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: linear-gradient(135deg, #0891b2 0%, #2563eb 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .logo-text { color: #fff; }
+    .logo-name { font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
+    .logo-sub  { font-size: 9px; font-weight: 600; color: rgba(255,255,255,.5); letter-spacing: .12em; text-transform: uppercase; }
+    .nav-tabs { display: flex; gap: 3px; flex: 1; }
+    .nav-tab {
+      padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500;
+      color: rgba(255,255,255,.65); cursor: pointer; border: 1px solid transparent;
+      transition: all .15s;
+    }
+    .nav-tab:hover { color: rgba(255,255,255,.9); background: rgba(255,255,255,.07); }
+    .nav-tab.active { color: #fff; background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.16); }
+    .header-badge {
+      margin-left: auto;
+      background: #dc2626; color: #fff;
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+      animation: pulse-badge 2s infinite;
+    }
+    @keyframes pulse-badge { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+    /* ── Page Layout ── */
+    .page { display: none; padding: 28px 28px 40px; max-width: 1280px; margin: 0 auto; }
+    .page.active { display: block; }
+    .sec-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
+    .sec-title { font-size: 22px; font-weight: 800; color: var(--navy); letter-spacing: -.02em; }
+    .sec-sub   { font-size: 13px; color: var(--text-2); margin-top: 3px; }
+
+    /* ── Buttons ── */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-teal { background: var(--teal); color: #fff; }
+    .btn-teal:hover { background: #0e7490; }
+    .btn-danger { background: #dc2626; color: #fff; }
+    .btn-outline { background: #fff; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { background: var(--bg); }
+    .btn-ai {
+      background: linear-gradient(135deg, #0891b2, #2563eb);
+      color: #fff; font-size: 14px; padding: 10px 22px;
+    }
+    .btn-ai:hover { opacity: .92; }
+    .btn-ai:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── Cards ── */
+    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); padding: 20px; }
+    .card-title { font-size: 13px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 14px; }
+
+    /* ── KPI Cards ── */
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .kpi-card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); padding: 20px 22px; }
+    .kpi-label { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+    .kpi-val { font-size: 32px; font-weight: 900; letter-spacing: -.03em; color: var(--navy); line-height: 1; }
+    .kpi-sub { font-size: 12px; color: var(--text-3); margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+    .kpi-up { color: var(--green); }
+    .kpi-down { color: var(--red); }
+    .kpi-bar { height: 4px; border-radius: 2px; background: var(--border); margin-top: 10px; overflow: hidden; }
+    .kpi-bar-fill { height: 100%; border-radius: 2px; transition: width 1.2s ease-out; width: 0; }
+
+    /* ── Charts grid ── */
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    .chart-wrap { position: relative; }
+
+    /* ── Alert list ── */
+    .alert-list { display: flex; flex-direction: column; gap: 10px; }
+    .alert-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 16px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--surface);
+    }
+    .alert-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .alert-dot.critical { background: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,.2); animation: pulse-alert 1.5s infinite; }
+    .alert-dot.warn { background: var(--amber); }
+    .alert-dot.ok { background: var(--green); }
+    @keyframes pulse-alert { 0%,100%{box-shadow:0 0 0 3px rgba(220,38,38,.2)} 50%{box-shadow:0 0 0 6px rgba(220,38,38,.05)} }
+    .alert-body { flex: 1; }
+    .alert-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .alert-desc { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+    .alert-action { font-size: 11px; font-weight: 600; color: var(--blue); cursor: pointer; }
+
+    /* ── AI Prediction page ── */
+    .predict-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
+    .machine-list { display: flex; flex-direction: column; gap: 8px; }
+    .mach-btn {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: 10px;
+      border: 2px solid var(--border); background: var(--surface);
+      cursor: pointer; transition: all .15s; text-align: left;
+    }
+    .mach-btn:hover { border-color: var(--teal); }
+    .mach-btn.active { border-color: var(--teal); background: #f0f9ff; }
+    .mach-status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .mach-info { flex: 1; min-width: 0; }
+    .mach-name { font-size: 12px; font-weight: 700; color: var(--text); }
+    .mach-line { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+    .mach-score-mini { font-size: 13px; font-weight: 800; }
+    .mach-btn.critical .mach-status-dot { background: var(--red); animation: pulse-alert 1.5s infinite; }
+    .mach-btn.warn .mach-status-dot { background: var(--amber); }
+    .mach-btn.ok .mach-status-dot { background: var(--green); }
+    .mach-btn.critical .mach-score-mini { color: var(--red); }
+    .mach-btn.warn .mach-score-mini { color: var(--amber); }
+    .mach-btn.ok .mach-score-mini { color: var(--green); }
+
+    /* meta table under machine list */
+    .mach-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+    .mach-meta-item { background: var(--bg); border-radius: 8px; padding: 10px 12px; }
+    .mach-meta-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; }
+    .mach-meta-val { font-size: 15px; font-weight: 800; color: var(--navy); margin-top: 3px; }
+
+    /* Health gauge */
+    .gauge-panel { display: flex; flex-direction: column; align-items: center; padding: 24px 20px 16px; }
+    .gauge-svg { width: 220px; height: 190px; overflow: visible; }
+    .gauge-score-text { font-size: 38px; font-weight: 900; fill: var(--navy); font-family: 'Inter', sans-serif; }
+    .gauge-label-text { font-size: 11px; fill: var(--text-3); font-family: 'Inter', sans-serif; letter-spacing: .06em; }
+    .gauge-status { font-size: 13px; font-weight: 700; margin-top: 6px; padding: 4px 14px; border-radius: 20px; }
+    .gauge-status.critical { background: #fef2f2; color: var(--red); }
+    .gauge-status.warn { background: #fffbeb; color: var(--amber); }
+    .gauge-status.ok { background: #f0fdf4; color: var(--green); }
+
+    /* AI loading */
+    .ai-loading { display: none; align-items: center; gap: 8px; font-size: 12px; color: var(--teal); font-weight: 600; margin-bottom: 8px; }
+    .ai-loading.show { display: flex; }
+    .ai-spin { width: 16px; height: 16px; border: 2px solid #e0f2fe; border-top-color: var(--teal); border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Component bars */
+    .comp-list { display: flex; flex-direction: column; gap: 12px; }
+    .comp-item { display: flex; align-items: center; gap: 12px; }
+    .comp-name { font-size: 12px; font-weight: 600; color: var(--text); width: 150px; flex-shrink: 0; }
+    .comp-bar-bg { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .comp-bar-fill { height: 100%; border-radius: 4px; width: 0; transition: width 0.8s ease-out; }
+    .comp-pct { font-size: 12px; font-weight: 700; width: 40px; text-align: right; }
+
+    /* Failure probability */
+    .prob-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+    .prob-card { text-align: center; padding: 14px 10px; border-radius: 10px; border: 1px solid var(--border); }
+    .prob-period { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; }
+    .prob-val { font-size: 28px; font-weight: 900; margin: 6px 0 4px; }
+    .prob-label { font-size: 10px; color: var(--text-3); }
+    .prob-critical { border-color: #fecaca; background: #fef2f2; }
+    .prob-critical .prob-val { color: var(--red); }
+    .prob-warn { border-color: #fed7aa; background: #fffbeb; }
+    .prob-warn .prob-val { color: var(--amber); }
+    .prob-ok { border-color: #bbf7d0; background: #f0fdf4; }
+    .prob-ok .prob-val { color: var(--green); }
+
+    /* Recommendations */
+    .rec-list { display: flex; flex-direction: column; gap: 10px; }
+    .rec-item { display: flex; gap: 12px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); }
+    .rec-priority { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; height: fit-content; flex-shrink: 0; margin-top: 2px; }
+    .rec-high { background: #fef2f2; color: var(--red); }
+    .rec-medium { background: #fffbeb; color: var(--amber); }
+    .rec-low { background: #f0fdf4; color: var(--green); }
+    .rec-text { font-size: 13px; font-weight: 600; color: var(--text); }
+    .rec-detail { font-size: 11px; color: var(--text-3); margin-top: 3px; font-family: 'IBM Plex Mono', monospace; }
+
+    /* ── Equipment Monitor page ── */
+    .equip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .equip-card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+    .equip-canvas-wrap { position: relative; background: #f8fafc; border-bottom: 1px solid var(--border); }
+    .equip-canvas-wrap canvas { display: block; width: 100%; height: auto; }
+    .equip-status-badge {
+      position: absolute; top: 10px; right: 10px;
+      font-size: 10px; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .status-running { background: #dcfce7; color: #166534; }
+    .status-warn { background: #fef9c3; color: #713f12; }
+    .status-critical { background: #fef2f2; color: #7f1d1d; }
+    .equip-info { padding: 14px 16px; }
+    .equip-name { font-size: 14px; font-weight: 800; color: var(--navy); }
+    .equip-line { font-size: 11px; color: var(--text-3); margin-bottom: 10px; }
+    .sensor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .sensor-item { }
+    .sensor-label { font-size: 10px; color: var(--text-3); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+    .sensor-val { font-size: 14px; font-weight: 800; color: var(--text); font-family: 'IBM Plex Mono', monospace; }
+    .sensor-val.warn { color: var(--amber); }
+    .sensor-val.critical { color: var(--red); }
+    .equip-hours { font-size: 11px; color: var(--text-3); margin-top: 10px; border-top: 1px solid var(--border); padding-top: 8px; }
+
+    /* Status LED */
+    .status-led { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+    .led-green { background: var(--green); box-shadow: 0 0 4px rgba(5,150,105,.6); }
+    .led-amber { background: var(--amber); box-shadow: 0 0 4px rgba(217,119,6,.6); animation: pulse-alert 2s infinite; }
+    .led-red { background: var(--red); box-shadow: 0 0 4px rgba(220,38,38,.6); animation: pulse-alert 1.2s infinite; }
+
+    /* ── Calendar page ── */
+    .cal-layout { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+    .calendar-wrap { }
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .cal-month { font-size: 18px; font-weight: 800; color: var(--navy); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-dow { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-3); padding: 6px 0; text-transform: uppercase; letter-spacing: .06em; }
+    .cal-day {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 8px; min-height: 68px;
+      cursor: default;
+    }
+    .cal-day.empty { background: transparent; border-color: transparent; }
+    .cal-day.today { border-color: var(--teal); background: #f0f9ff; }
+    .cal-day-num { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .cal-day.today .cal-day-num { color: var(--teal); }
+    .cal-day.empty .cal-day-num { display: none; }
+    .cal-event {
+      font-size: 9px; font-weight: 600; padding: 2px 5px;
+      border-radius: 3px; margin-bottom: 2px; line-height: 1.3;
+    }
+    .cal-event.urgent { background: #fef2f2; color: var(--red); }
+    .cal-event.plan { background: #eff6ff; color: var(--blue); }
+    .cal-event.done { background: #f0fdf4; color: var(--green); }
+    .cal-event.inspect { background: #fefce8; color: #a16207; }
+
+    /* Maintenance list */
+    .maint-list { display: flex; flex-direction: column; gap: 10px; }
+    .maint-item { padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); }
+    .maint-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .maint-item-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .maint-date { font-size: 11px; font-weight: 600; color: var(--text-3); font-family: 'IBM Plex Mono', monospace; }
+    .maint-item-desc { font-size: 12px; color: var(--text-2); }
+    .maint-tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; margin-top: 6px; display: inline-block; }
+    .tag-urgent { background: #fef2f2; color: var(--red); }
+    .tag-plan { background: #eff6ff; color: var(--blue); }
+    .tag-inspect { background: #fefce8; color: #a16207; }
+
+    /* 3-col inner grid helpers */
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+
+    /* Predict right panel layout */
+    .predict-right { display: flex; flex-direction: column; gap: 16px; }
+    .predict-top { display: grid; grid-template-columns: 230px 1fr; gap: 16px; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-wrap">
+    <div class="logo-icon">⚙️</div>
+    <div class="logo-text">
+      <div class="logo-name">MaintAI</div>
+      <div class="logo-sub">Predictive Maintenance System</div>
+    </div>
+  </div>
+  <nav class="nav-tabs">
+    <div class="nav-tab active" onclick="showPage('dash',this)">📊 OEEダッシュボード</div>
+    <div class="nav-tab" onclick="showPage('predict',this)">🤖 AI故障予測</div>
+    <div class="nav-tab" onclick="showPage('monitor',this)">🏭 設備監視</div>
+    <div class="nav-tab" onclick="showPage('calendar',this)">📅 保全カレンダー</div>
+  </nav>
+  <div class="header-badge">⚠ 要注意 2件</div>
+</header>
+
+<!-- ═══════════════════════════════════════════════
+     Page 1: OEE Dashboard
+════════════════════════════════════════════════ -->
+<div class="page active" id="page-dash">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">OEEダッシュボード</div>
+      <div class="sec-sub">設備総合効率・稼働状況のリアルタイム概況 — 2026年5月</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-outline">📥 レポート出力</button>
+      <button class="btn btn-teal">🔄 更新</button>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">総合設備効率 OEE</div>
+      <div class="kpi-val" id="k-oee">—</div>
+      <div class="kpi-sub"><span class="kpi-up">↑ 5.2pt</span> 先月比</div>
+      <div class="kpi-bar"><div class="kpi-bar-fill" style="width:0%;background:var(--teal)" data-w="87"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">設備稼働率</div>
+      <div class="kpi-val" id="k-avail">—</div>
+      <div class="kpi-sub"><span class="kpi-up">↑ 2.1pt</span> 先月比</div>
+      <div class="kpi-bar"><div class="kpi-bar-fill" style="width:0%;background:var(--green)" data-w="92"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">平均故障間隔 MTBF</div>
+      <div class="kpi-val" id="k-mtbf">—</div>
+      <div class="kpi-sub"><span class="kpi-down">↓ 31h</span> 先月比</div>
+      <div class="kpi-bar"><div class="kpi-bar-fill" style="width:0%;background:var(--amber)" data-w="70"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">平均修復時間 MTTR</div>
+      <div class="kpi-val" id="k-mttr">—</div>
+      <div class="kpi-sub"><span class="kpi-up">↓ 0.4h</span> 改善</div>
+      <div class="kpi-bar"><div class="kpi-bar-fill" style="width:0%;background:var(--green)" data-w="80"></div></div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-title">📈 OEE月次推移（過去12ヶ月）</div>
+      <canvas id="oeeChart" height="200"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">🥧 停止原因内訳</div>
+      <canvas id="stopChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-title">🏭 設備別稼働率（今月）</div>
+      <canvas id="machChart" height="200"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">⚠️ 要注意設備アラート</div>
+      <div class="alert-list">
+        <div class="alert-item">
+          <div class="alert-dot critical"></div>
+          <div class="alert-body">
+            <div class="alert-name">油圧プレス HP-800 — D ライン</div>
+            <div class="alert-desc">健全度スコア 34.2 / 油圧シール劣化・圧力変動 ±18%</div>
+          </div>
+          <div class="alert-action" onclick="goToPredict('M4')">予測詳細 →</div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-dot warn"></div>
+          <div class="alert-body">
+            <div class="alert-name">CNC加工機 MC-5000 — A ライン</div>
+            <div class="alert-desc">健全度スコア 72.4 / スピンドルベアリング振動増大</div>
+          </div>
+          <div class="alert-action" onclick="goToPredict('M1')">予測詳細 →</div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-dot ok"></div>
+          <div class="alert-body">
+            <div class="alert-name">射出成形機 IM-300 — B ライン</div>
+            <div class="alert-desc">健全度スコア 91.3 / 定期メンテ 5/20 予定</div>
+          </div>
+          <div class="alert-action">状態良好</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     Page 2: AI Failure Prediction
+════════════════════════════════════════════════ -->
+<div class="page" id="page-predict">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">AI故障予測</div>
+      <div class="sec-sub">機械学習モデルによる故障確率予測・劣化診断・保全推奨</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="ai-loading" id="pred-loading"><div class="ai-spin"></div>AIモデル推論中...</div>
+      <button class="btn btn-ai" id="pred-btn" onclick="runPrediction()">🤖 AI予測実行</button>
+    </div>
+  </div>
+
+  <div class="predict-layout">
+    <!-- Left: machine selector -->
+    <div>
+      <div class="card-title" style="margin-bottom:10px">設備選択</div>
+      <div class="machine-list" id="machineList">
+        <div class="mach-btn warn active" onclick="selectMachine('M1',this)">
+          <div class="mach-status-dot"></div>
+          <div class="mach-info">
+            <div class="mach-name">CNC加工機 MC-5000</div>
+            <div class="mach-line">A ライン</div>
+          </div>
+          <div class="mach-score-mini">72.4</div>
+        </div>
+        <div class="mach-btn ok" onclick="selectMachine('M2',this)">
+          <div class="mach-status-dot"></div>
+          <div class="mach-info">
+            <div class="mach-name">射出成形機 IM-300</div>
+            <div class="mach-line">B ライン</div>
+          </div>
+          <div class="mach-score-mini">91.3</div>
+        </div>
+        <div class="mach-btn ok" onclick="selectMachine('M3',this)">
+          <div class="mach-status-dot"></div>
+          <div class="mach-info">
+            <div class="mach-name">コンベア CV-200</div>
+            <div class="mach-line">C ライン</div>
+          </div>
+          <div class="mach-score-mini">88.7</div>
+        </div>
+        <div class="mach-btn critical" onclick="selectMachine('M4',this)">
+          <div class="mach-status-dot"></div>
+          <div class="mach-info">
+            <div class="mach-name">油圧プレス HP-800</div>
+            <div class="mach-line">D ライン</div>
+          </div>
+          <div class="mach-score-mini">34.2</div>
+        </div>
+        <div class="mach-btn ok" onclick="selectMachine('M5',this)">
+          <div class="mach-status-dot"></div>
+          <div class="mach-info">
+            <div class="mach-name">冷却ポンプ CP-100</div>
+            <div class="mach-line">ユーティリティ</div>
+          </div>
+          <div class="mach-score-mini">95.1</div>
+        </div>
+      </div>
+
+      <!-- Machine meta -->
+      <div class="mach-meta" id="machMeta">
+        <div class="mach-meta-item">
+          <div class="mach-meta-label">設備年数</div>
+          <div class="mach-meta-val" id="meta-age">—</div>
+        </div>
+        <div class="mach-meta-item">
+          <div class="mach-meta-label">累計稼働時間</div>
+          <div class="mach-meta-val" id="meta-hours">—</div>
+        </div>
+        <div class="mach-meta-item">
+          <div class="mach-meta-label">前回保全</div>
+          <div class="mach-meta-val" id="meta-last">—</div>
+        </div>
+        <div class="mach-meta-item">
+          <div class="mach-meta-label">次回保全予定</div>
+          <div class="mach-meta-val" id="meta-next">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: prediction results -->
+    <div class="predict-right">
+      <!-- Top: gauge + components -->
+      <div class="predict-top">
+        <!-- Health gauge -->
+        <div class="card gauge-panel">
+          <svg class="gauge-svg" viewBox="0 0 220 190">
+            <!-- Background track -->
+            <path d="M 46 174 A 90 90 0 1 1 174 174"
+                  fill="none" stroke="#e2e8f0" stroke-width="18" stroke-linecap="round"/>
+            <!-- Fill arc -->
+            <path id="gaugeFill" d="M 46 174 A 90 90 0 1 1 174 174"
+                  fill="none" stroke="#059669" stroke-width="18" stroke-linecap="round"
+                  stroke-dasharray="0 424" stroke-dashoffset="0"/>
+            <!-- Score text -->
+            <text x="110" y="148" text-anchor="middle" class="gauge-score-text" id="gaugeScore">—</text>
+            <text x="110" y="170" text-anchor="middle" class="gauge-label-text">健全度スコア</text>
+            <text x="46" y="192" text-anchor="middle" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif">0</text>
+            <text x="174" y="192" text-anchor="middle" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif">100</text>
+          </svg>
+          <div class="gauge-status" id="gaugeStatus">待機中</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:8px;font-family:'IBM Plex Mono',monospace" id="predStatus">設備を選択してAI予測を実行</div>
+        </div>
+
+        <!-- Component bars -->
+        <div class="card">
+          <div class="card-title">🔩 コンポーネント健全度</div>
+          <div class="comp-list" id="compList">
+            <div style="font-size:12px;color:var(--text-3);text-align:center;padding:20px 0">AI予測実行後に表示</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Failure probability -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:14px">📉 故障確率予測（今後90日間）</div>
+        <div class="prob-grid" id="probGrid">
+          <div class="prob-card">
+            <div class="prob-period">30日以内</div>
+            <div class="prob-val" id="prob30">—%</div>
+            <div class="prob-label">故障発生確率</div>
+          </div>
+          <div class="prob-card">
+            <div class="prob-period">60日以内</div>
+            <div class="prob-val" id="prob60">—%</div>
+            <div class="prob-label">故障発生確率</div>
+          </div>
+          <div class="prob-card">
+            <div class="prob-period">90日以内</div>
+            <div class="prob-val" id="prob90">—%</div>
+            <div class="prob-label">故障発生確率</div>
+          </div>
+        </div>
+        <canvas id="probChart" height="90"></canvas>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="card">
+        <div class="card-title">💡 AI保全推奨アクション</div>
+        <div class="rec-list" id="recList">
+          <div style="font-size:12px;color:var(--text-3);text-align:center;padding:16px 0">AI予測実行後に表示</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     Page 3: Equipment Monitor
+════════════════════════════════════════════════ -->
+<div class="page" id="page-monitor">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">設備監視</div>
+      <div class="sec-sub">全設備のリアルタイムセンサーデータ・稼働状況モニタリング</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <span style="font-size:12px;color:var(--text-3);align-self:center">最終更新: 08:47:32</span>
+      <button class="btn btn-teal">🔄 自動更新 ON</button>
+    </div>
+  </div>
+
+  <div class="equip-grid" id="equipGrid">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     Page 4: Maintenance Calendar
+════════════════════════════════════════════════ -->
+<div class="page" id="page-calendar">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">保全カレンダー</div>
+      <div class="sec-sub">計画保全スケジュール管理・作業履歴トラッキング</div>
+    </div>
+    <button class="btn btn-teal">＋ 保全計画追加</button>
+  </div>
+
+  <div class="cal-layout">
+    <!-- Calendar grid -->
+    <div>
+      <div class="card" style="padding:20px">
+        <div class="cal-header">
+          <div class="cal-month">2026年 5月</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-outline" style="padding:4px 10px;font-size:12px">‹</button>
+            <button class="btn btn-outline" style="padding:4px 10px;font-size:12px">›</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="calGrid">
+          <!-- Populated by JS -->
+        </div>
+        <div style="display:flex;gap:16px;margin-top:14px;flex-wrap:wrap">
+          <span style="font-size:11px;color:var(--text-3)"><span style="display:inline-block;width:10px;height:10px;background:#fef2f2;border-radius:2px;margin-right:4px;border:1px solid #fecaca"></span>緊急</span>
+          <span style="font-size:11px;color:var(--text-3)"><span style="display:inline-block;width:10px;height:10px;background:#eff6ff;border-radius:2px;margin-right:4px;border:1px solid #bfdbfe"></span>計画保全</span>
+          <span style="font-size:11px;color:var(--text-3)"><span style="display:inline-block;width:10px;height:10px;background:#fefce8;border-radius:2px;margin-right:4px;border:1px solid #fde68a"></span>定期点検</span>
+          <span style="font-size:11px;color:var(--text-3)"><span style="display:inline-block;width:10px;height:10px;background:#f0fdf4;border-radius:2px;margin-right:4px;border:1px solid #bbf7d0"></span>完了</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming maintenance -->
+    <div>
+      <div class="card-title" style="margin-bottom:10px">📋 今後の保全予定</div>
+      <div class="maint-list">
+        <div class="maint-item">
+          <div class="maint-item-header">
+            <div class="maint-item-name">⚠ 油圧プレス HP-800 — 緊急点検</div>
+            <div class="maint-date">05/08</div>
+          </div>
+          <div class="maint-item-desc">油圧シール交換・圧力リリーフ弁調整・全系統リーク確認</div>
+          <span class="maint-tag tag-urgent">緊急</span>
+        </div>
+        <div class="maint-item">
+          <div class="maint-item-header">
+            <div class="maint-item-name">CNC加工機 MC-5000 — ベアリング点検</div>
+            <div class="maint-date">05/12</div>
+          </div>
+          <div class="maint-item-desc">スピンドルベアリング振動測定・グリスアップ・交換判定</div>
+          <span class="maint-tag tag-inspect">定期点検</span>
+        </div>
+        <div class="maint-item">
+          <div class="maint-item-header">
+            <div class="maint-item-name">コンベア CV-200 — ベルト点検</div>
+            <div class="maint-date">05/15</div>
+          </div>
+          <div class="maint-item-desc">駆動ベルト張力確認・ローラー摩耗チェック・潤滑</div>
+          <span class="maint-tag tag-plan">計画保全</span>
+        </div>
+        <div class="maint-item">
+          <div class="maint-item-header">
+            <div class="maint-item-name">射出成形機 IM-300 — 金型清掃</div>
+            <div class="maint-date">05/20</div>
+          </div>
+          <div class="maint-item-desc">金型クリーニング・タイバー潤滑・油温センサー確認</div>
+          <span class="maint-tag tag-plan">計画保全</span>
+        </div>
+        <div class="maint-item">
+          <div class="maint-item-header">
+            <div class="maint-item-name">冷却ポンプ CP-100 — フィルター交換</div>
+            <div class="maint-date">05/22</div>
+          </div>
+          <div class="maint-item-desc">ストレーナー清掃・フィルターエレメント交換・流量確認</div>
+          <span class="maint-tag tag-plan">計画保全</span>
+        </div>
+        <div class="maint-item">
+          <div class="maint-item-header">
+            <div class="maint-item-name">全設備 — 月次総合点検</div>
+            <div class="maint-date">05/28</div>
+          </div>
+          <div class="maint-item-desc">電気系統・安全装置・消耗品全数チェック（計画停止4h）</div>
+          <span class="maint-tag tag-inspect">定期点検</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// Data
+// ═══════════════════════════════════════════════
+const MACHINES = {
+  M1: {
+    name: 'CNC加工機 MC-5000', line: 'A ライン', age: '7.2年', hours: '58,420h',
+    last: '2026-04-15', next: '2026-05-12', health: 72.4,
+    status: 'warn',
+    sensors: { rpm: '4,820', temp: '68°C', vib: '4.2mm/s', load: '78%' },
+    sensorStatus: { rpm: 'ok', temp: 'ok', vib: 'warn', load: 'ok' },
+    components: [
+      { name: 'スピンドルベアリング', score: 58.2 },
+      { name: 'サーボモーター X/Y/Z', score: 84.1 },
+      { name: '油圧ユニット',         score: 79.3 },
+      { name: 'ボールスクリュー',     score: 63.7 },
+      { name: '冷却システム',         score: 91.2 },
+    ],
+    prob: [12.3, 28.7, 47.1],
+    recs: [
+      { p: 'high',   t: 'スピンドルベアリング交換（30日以内を推奨）', d: '部品: ベアリング #6205-2RS ×2 / 工数: 4h' },
+      { p: 'medium', t: 'ボールスクリュー潤滑グリス補充',             d: '使用グリス: モリコート BLT-2 / 工数: 1h' },
+      { p: 'low',    t: '次回定期点検: 2026-05-12 実施予定',         d: '計画停止: 4h / 担当: 山田・鈴木' },
+    ],
+    draw: drawCNC,
+  },
+  M2: {
+    name: '射出成形機 IM-300', line: 'B ライン', age: '4.8年', hours: '38,210h',
+    last: '2026-03-28', next: '2026-05-20', health: 91.3,
+    status: 'ok',
+    sensors: { cycle: '32.4s', temp: '210°C', press: '142MPa', cool: '18°C' },
+    sensorStatus: { cycle: 'ok', temp: 'ok', press: 'ok', cool: 'ok' },
+    components: [
+      { name: '射出スクリュー',     score: 88.4 },
+      { name: '型締め油圧',        score: 94.7 },
+      { name: 'タイバー',          score: 92.1 },
+      { name: 'ヒーターバンド',    score: 96.3 },
+      { name: '冷却水回路',        score: 89.8 },
+    ],
+    prob: [3.1, 8.7, 15.2],
+    recs: [
+      { p: 'low',    t: '定期金型清掃: 2026-05-20 予定',           d: 'サイクル: 32.4s（標準±2s以内）良好' },
+      { p: 'low',    t: 'スクリュー摩耗量: 正常範囲内',             d: '次回測定: 2026-06-28 / 摩耗率 0.8%' },
+      { p: 'medium', t: 'タイバーナット増締め確認（3ヶ月後）',      d: '前回確認: 2026-02-15 / トルク値 正常' },
+    ],
+    draw: drawInjection,
+  },
+  M3: {
+    name: 'コンベア CV-200', line: 'C ライン', age: '5.5年', hours: '43,870h',
+    last: '2026-04-02', next: '2026-05-15', health: 88.7,
+    status: 'ok',
+    sensors: { speed: '1.20m/s', temp: '42°C', tension: '98%', load: '65%' },
+    sensorStatus: { speed: 'ok', temp: 'ok', tension: 'ok', load: 'ok' },
+    components: [
+      { name: '駆動ベルト',        score: 82.3 },
+      { name: '搬送ローラー',      score: 93.6 },
+      { name: '駆動モーター',      score: 91.4 },
+      { name: '張力調整機構',      score: 87.9 },
+      { name: '検出センサー群',    score: 95.2 },
+    ],
+    prob: [5.8, 14.2, 24.6],
+    recs: [
+      { p: 'medium', t: '駆動ベルト張力確認・調整（5/15 実施）',   d: '現在テンション: 98% / 推奨範囲: 95-105%' },
+      { p: 'low',    t: 'ローラーベアリング一斉点検（6月予定）',    d: '稼働時間: 43,870h / 推奨交換: 50,000h' },
+      { p: 'low',    t: '安全センサー動作確認（月次）',             d: '光電センサー×8 / 近接センサー×4 全正常' },
+    ],
+    draw: drawConveyor,
+  },
+  M4: {
+    name: '油圧プレス HP-800', line: 'D ライン', age: '11.3年', hours: '92,640h',
+    last: '2026-01-20', next: '2026-05-08', health: 34.2,
+    status: 'critical',
+    sensors: { press: '18.2MPa', temp: '78°C', vib: '9.8mm/s', oil: '42%' },
+    sensorStatus: { press: 'critical', temp: 'warn', vib: 'critical', oil: 'warn' },
+    components: [
+      { name: '油圧シール',              score: 22.4 },
+      { name: '圧力リリーフ弁',          score: 38.1 },
+      { name: 'プランジャー',            score: 54.7 },
+      { name: '油圧ポンプ',              score: 47.3 },
+      { name: '圧力センサー/制御系',    score: 71.2 },
+    ],
+    prob: [78.3, 91.2, 96.7],
+    recs: [
+      { p: 'high',   t: '⚠ 即時停機・緊急点検を強く推奨',         d: '油圧シール亀裂リスク / 作業者安全確保最優先' },
+      { p: 'high',   t: '油圧シール・Oリング全数交換',              d: '部品: #HP800-SEAL-KIT / 工数: 8h / 専門業者手配' },
+      { p: 'medium', t: '圧力リリーフ弁調整・校正',                 d: '設定圧力: 20MPa / 現在: 18.2MPa（要調整）' },
+    ],
+    draw: drawHydPress,
+  },
+  M5: {
+    name: '冷却ポンプ CP-100', line: 'ユーティリティ', age: '3.1年', hours: '24,530h',
+    last: '2026-04-10', next: '2026-05-22', health: 95.1,
+    status: 'ok',
+    sensors: { flow: '320L/min', press: '0.42MPa', temp: '18°C', noise: '62dB' },
+    sensorStatus: { flow: 'ok', press: 'ok', temp: 'ok', noise: 'ok' },
+    components: [
+      { name: 'ポンプインペラー',    score: 96.8 },
+      { name: 'メカニカルシール',    score: 93.4 },
+      { name: '駆動モーター',        score: 97.2 },
+      { name: 'ストレーナー',        score: 88.6 },
+      { name: '流量センサー',        score: 99.1 },
+    ],
+    prob: [1.2, 3.4, 7.8],
+    recs: [
+      { p: 'low',    t: 'ストレーナー清掃（5/22 予定）',           d: '前回清掃: 2026-04-10 / 差圧: 0.02MPa（良好）' },
+      { p: 'low',    t: 'フィルターエレメント定期交換',              d: '交換間隔: 3ヶ月 / 次回: 2026-07-10' },
+      { p: 'low',    t: '全系統漏洩確認（月次）',                   d: '前回: 2026-05-01 / 異常なし' },
+    ],
+    draw: drawPump,
+  },
+};
+
+let currentMachine = 'M1';
+let predDone = false;
+let predicting = false;
+let probChartInst = null;
+
+// ═══════════════════════════════════════════════
+// Navigation
+// ═══════════════════════════════════════════════
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+function goToPredict(machId) {
+  showPage('predict', document.querySelectorAll('.nav-tab')[1]);
+  const btn = document.querySelector(`#machineList .mach-btn:nth-child(${Object.keys(MACHINES).indexOf(machId)+1})`);
+  if (btn) { selectMachine(machId, btn); setTimeout(runPrediction, 300); }
+}
+
+// ═══════════════════════════════════════════════
+// Dashboard Init
+// ═══════════════════════════════════════════════
+function animateCounter(el, target, suffix, decimals) {
+  let cur = 0;
+  const step = target / 50;
+  const fn = () => {
+    cur = Math.min(cur + step, target);
+    el.textContent = cur.toFixed(decimals) + suffix;
+    if (cur < target) requestAnimationFrame(fn);
+  };
+  requestAnimationFrame(fn);
+}
+
+function initDashboard() {
+  setTimeout(() => {
+    animateCounter(document.getElementById('k-oee'),   87.3, '%', 1);
+    animateCounter(document.getElementById('k-avail'), 92.1, '%', 1);
+    animateCounter(document.getElementById('k-mtbf'),  847,  'h', 0);
+    animateCounter(document.getElementById('k-mttr'),  2.3,  'h', 1);
+    document.querySelectorAll('.kpi-bar-fill').forEach(b => {
+      setTimeout(() => { b.style.width = b.dataset.w + '%'; }, 100);
+    });
+  }, 400);
+
+  Chart.defaults.font.family = "'Inter', sans-serif";
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#e2e8f0';
+
+  // OEE trend
+  new Chart(document.getElementById('oeeChart'), {
+    type: 'line',
+    data: {
+      labels: ['6月','7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月'],
+      datasets: [{
+        label: 'OEE',
+        data: [78.2,80.1,77.4,81.3,79.8,82.4,83.1,80.7,82.9,84.2,82.1,87.3],
+        borderColor: '#0891b2', backgroundColor: 'rgba(8,145,178,.08)',
+        borderWidth: 2.5, tension: .4, fill: true, pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { min: 70, max: 95, ticks: { callback: v => v+'%' } } }
+    }
+  });
+
+  // Stop cause donut
+  new Chart(document.getElementById('stopChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['故障停止','段取替','品質不良','計画保全','その他'],
+      datasets: [{ data: [38, 24, 12, 18, 8], backgroundColor: ['#dc2626','#d97706','#f59e0b','#0891b2','#94a3b8'], borderWidth: 0 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      cutout: '60%',
+      plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 } } } }
+    }
+  });
+
+  // Machine utilization bar
+  new Chart(document.getElementById('machChart'), {
+    type: 'bar',
+    data: {
+      labels: ['MC-5000','IM-300','CV-200','HP-800','CP-100'],
+      datasets: [{
+        label: '稼働率',
+        data: [88.4, 96.2, 93.7, 71.2, 99.1],
+        backgroundColor: ['#d97706','#0891b2','#0891b2','#dc2626','#059669'],
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { min: 60, max: 100, ticks: { callback: v => v+'%' } } }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════
+// AI Prediction
+// ═══════════════════════════════════════════════
+function selectMachine(key, el) {
+  currentMachine = key;
+  document.querySelectorAll('.mach-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const m = MACHINES[key];
+  document.getElementById('meta-age').textContent   = m.age;
+  document.getElementById('meta-hours').textContent = m.hours;
+  document.getElementById('meta-last').textContent  = m.last;
+  document.getElementById('meta-next').textContent  = m.next;
+  // Reset
+  resetPrediction();
+}
+
+function resetPrediction() {
+  document.getElementById('gaugeFill').setAttribute('stroke-dasharray', '0 424');
+  document.getElementById('gaugeScore').textContent = '—';
+  document.getElementById('gaugeStatus').className = 'gauge-status';
+  document.getElementById('gaugeStatus').textContent = '待機中';
+  document.getElementById('predStatus').textContent = '設備を選択してAI予測を実行';
+  document.getElementById('compList').innerHTML = '<div style="font-size:12px;color:var(--text-3);text-align:center;padding:20px 0">AI予測実行後に表示</div>';
+  document.getElementById('recList').innerHTML  = '<div style="font-size:12px;color:var(--text-3);text-align:center;padding:16px 0">AI予測実行後に表示</div>';
+  ['prob30','prob60','prob90'].forEach(id => document.getElementById(id).textContent = '—%');
+  document.querySelectorAll('.prob-card').forEach(c => { c.className = 'prob-card'; });
+  if (probChartInst) { probChartInst.destroy(); probChartInst = null; }
+  predDone = false;
+  predicting = false;
+  document.getElementById('pred-btn').disabled = false;
+}
+
+function runPrediction() {
+  if (predicting) return;
+  predicting = true;
+  const btn = document.getElementById('pred-btn');
+  const loading = document.getElementById('pred-loading');
+  btn.disabled = true;
+  loading.classList.add('show');
+  const m = MACHINES[currentMachine];
+
+  // Stage 1: loading
+  document.getElementById('predStatus').textContent = 'センサーデータ取得中...';
+  setTimeout(() => { document.getElementById('predStatus').textContent = '時系列モデル推論中...'; }, 700);
+  setTimeout(() => { document.getElementById('predStatus').textContent = '劣化トレンド分析中...'; }, 1400);
+
+  // Stage 2: animate gauge
+  setTimeout(() => {
+    loading.classList.remove('show');
+    document.getElementById('predStatus').textContent = '分析完了';
+    animateGauge(m.health, m.status);
+  }, 2100);
+
+  // Stage 3: component bars
+  setTimeout(() => { showComponents(m); }, 3000);
+
+  // Stage 4: probability
+  setTimeout(() => { showProbability(m); }, 3800);
+
+  // Stage 5: recommendations
+  setTimeout(() => {
+    showRecommendations(m);
+    btn.disabled = false;
+    predDone = true;
+    predicting = false;
+  }, 4600);
+}
+
+function animateGauge(score, status) {
+  const totalLen = 424;
+  const target = (score / 100) * totalLen;
+  const fill = document.getElementById('gaugeFill');
+  const scoreEl = document.getElementById('gaugeScore');
+  const statusEl = document.getElementById('gaugeStatus');
+
+  const color = status === 'critical' ? '#dc2626' : status === 'warn' ? '#d97706' : '#059669';
+  fill.setAttribute('stroke', color);
+
+  let cur = 0;
+  let curScore = 0;
+  const frames = 60;
+  const stepLen = target / frames;
+  const stepScore = score / frames;
+  function step() {
+    cur = Math.min(cur + stepLen, target);
+    curScore = Math.min(curScore + stepScore, score);
+    fill.setAttribute('stroke-dasharray', `${cur} ${totalLen}`);
+    scoreEl.textContent = curScore.toFixed(1);
+    if (cur < target) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+
+  const labels = { critical: '🔴 要緊急対応', warn: '⚠️ 要注意', ok: '✅ 良好' };
+  const classes = { critical: 'gauge-status critical', warn: 'gauge-status warn', ok: 'gauge-status ok' };
+  statusEl.className = classes[status];
+  statusEl.textContent = labels[status];
+}
+
+function showComponents(m) {
+  const container = document.getElementById('compList');
+  container.innerHTML = '';
+  m.components.forEach((c, i) => {
+    const s = c.score;
+    const color = s < 60 ? '#dc2626' : s < 80 ? '#d97706' : '#059669';
+    const div = document.createElement('div');
+    div.className = 'comp-item';
+    div.innerHTML = `
+      <div class="comp-name">${c.name}</div>
+      <div class="comp-bar-bg"><div class="comp-bar-fill" style="background:${color}" data-w="${s}"></div></div>
+      <div class="comp-pct" style="color:${color}">${s.toFixed(1)}</div>
+    `;
+    container.appendChild(div);
+    setTimeout(() => { div.querySelector('.comp-bar-fill').style.width = s + '%'; }, i * 150 + 50);
+  });
+}
+
+function showProbability(m) {
+  const p = m.prob;
+  const el30 = document.getElementById('prob30');
+  const el60 = document.getElementById('prob60');
+  const el90 = document.getElementById('prob90');
+  const cards = document.querySelectorAll('.prob-card');
+
+  el30.textContent = p[0].toFixed(1) + '%';
+  el60.textContent = p[1].toFixed(1) + '%';
+  el90.textContent = p[2].toFixed(1) + '%';
+
+  function probClass(v) { return v >= 50 ? 'prob-card prob-critical' : v >= 20 ? 'prob-card prob-warn' : 'prob-card prob-ok'; }
+  cards[0].className = probClass(p[0]);
+  cards[1].className = probClass(p[1]);
+  cards[2].className = probClass(p[2]);
+
+  // Probability chart
+  if (probChartInst) probChartInst.destroy();
+  probChartInst = new Chart(document.getElementById('probChart'), {
+    type: 'line',
+    data: {
+      labels: ['今日','10日','20日','30日','45日','60日','75日','90日'],
+      datasets: [{
+        label: '故障確率',
+        data: [0, p[0]*0.3, p[0]*0.7, p[0], p[1]*0.7, p[1], p[2]*0.8, p[2]],
+        borderColor: p[2] >= 50 ? '#dc2626' : p[2] >= 20 ? '#d97706' : '#059669',
+        backgroundColor: p[2] >= 50 ? 'rgba(220,38,38,.08)' : p[2] >= 20 ? 'rgba(217,119,6,.08)' : 'rgba(5,150,105,.08)',
+        borderWidth: 2.5, tension: .4, fill: true, pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { min: 0, max: 100, ticks: { callback: v => v+'%' } } }
+    }
+  });
+}
+
+function showRecommendations(m) {
+  const container = document.getElementById('recList');
+  container.innerHTML = '';
+  const labelMap = { high: '緊急', medium: '推奨', low: '任意' };
+  m.recs.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'rec-item';
+    div.innerHTML = `
+      <div class="rec-priority rec-${r.p}">${labelMap[r.p]}</div>
+      <div>
+        <div class="rec-text">${r.t}</div>
+        <div class="rec-detail">${r.d}</div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════════
+// Equipment Monitor — Canvas drawings
+// ═══════════════════════════════════════════════
+function drawCNC(ctx, w, h, status) {
+  ctx.clearRect(0, 0, w, h);
+  // Background
+  ctx.fillStyle = '#f1f5f9'; ctx.fillRect(0, 0, w, h);
+  // Machine body
+  const g = ctx.createLinearGradient(20, 0, w-20, 0);
+  g.addColorStop(0, '#94a3b8'); g.addColorStop(1, '#64748b');
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.roundRect(20, 20, w-40, h-40, 8); ctx.fill();
+  // Glass window
+  ctx.fillStyle = '#e0f2fe'; ctx.strokeStyle = '#0891b2';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.roundRect(35, 35, w-100, h-70, 4);
+  ctx.fill(); ctx.stroke();
+  // Workpiece on table
+  ctx.fillStyle = '#cbd5e1';
+  ctx.fillRect(55, h-70, 60, 20);
+  ctx.fillStyle = '#94a3b8';
+  ctx.fillRect(60, h-80, 50, 12);
+  // Spindle
+  ctx.fillStyle = '#475569';
+  ctx.fillRect(w/2 - 50, 25, 15, 40);
+  ctx.beginPath(); ctx.arc(w/2 - 43, 65, 6, 0, Math.PI*2);
+  ctx.fillStyle = '#334155'; ctx.fill();
+  // Control panel
+  ctx.fillStyle = '#1e293b';
+  ctx.beginPath(); ctx.roundRect(w-75, 30, 50, 90, 4); ctx.fill();
+  // Buttons
+  [[5,10,'#10b981'],[5,25,'#3b82f6'],[5,40,'#f59e0b'],[25,10,'#94a3b8'],[25,25,'#94a3b8']].forEach(([x,y,c]) => {
+    ctx.fillStyle = c; ctx.beginPath(); ctx.arc(w-70+x, 35+y, 4, 0, Math.PI*2); ctx.fill();
+  });
+  // Status light
+  const ledColor = status === 'critical' ? '#dc2626' : status === 'warn' ? '#f59e0b' : '#10b981';
+  ctx.fillStyle = ledColor;
+  ctx.beginPath(); ctx.arc(w-30, 22, 7, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.4)';
+  ctx.beginPath(); ctx.arc(w-33, 19, 3, 0, Math.PI*2); ctx.fill();
+}
+
+function drawInjection(ctx, w, h, status) {
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#f1f5f9'; ctx.fillRect(0, 0, w, h);
+  // Base
+  ctx.fillStyle = '#64748b';
+  ctx.fillRect(10, h-35, w-20, 18);
+  // Tie bars (4 horizontal)
+  ctx.fillStyle = '#94a3b8';
+  [h*0.3, h*0.45, h*0.6, h*0.75].forEach(y => {
+    ctx.fillRect(25, y, w-50, 5);
+  });
+  // Fixed platen (left)
+  const pg = ctx.createLinearGradient(0, 0, 30, 0);
+  pg.addColorStop(0, '#475569'); pg.addColorStop(1, '#64748b');
+  ctx.fillStyle = pg;
+  ctx.beginPath(); ctx.roundRect(15, h*0.22, 30, h*0.6, 4); ctx.fill();
+  // Moving platen (right)
+  ctx.fillStyle = '#475569';
+  ctx.beginPath(); ctx.roundRect(w-55, h*0.22, 30, h*0.6, 4); ctx.fill();
+  // Mold halves
+  ctx.fillStyle = '#1e293b';
+  ctx.fillRect(45, h*0.28, 28, h*0.5);
+  ctx.fillStyle = '#334155';
+  ctx.fillRect(w-73, h*0.28, 18, h*0.5);
+  // Injection barrel
+  const barG = ctx.createLinearGradient(0, h*0.4, 0, h*0.6);
+  barG.addColorStop(0, '#94a3b8'); barG.addColorStop(1, '#64748b');
+  ctx.fillStyle = barG;
+  ctx.beginPath(); ctx.roundRect(w-95, h*0.4, 30, h*0.2, 6); ctx.fill();
+  // Hydraulic cylinder
+  ctx.fillStyle = '#0891b2';
+  ctx.beginPath(); ctx.roundRect(w-25, h*0.35, 18, h*0.3, 4); ctx.fill();
+  // Status LED
+  const lc = status === 'critical' ? '#dc2626' : status === 'warn' ? '#f59e0b' : '#10b981';
+  ctx.fillStyle = lc;
+  ctx.beginPath(); ctx.arc(w-18, 18, 7, 0, Math.PI*2); ctx.fill();
+}
+
+function drawConveyor(ctx, w, h, status) {
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#f1f5f9'; ctx.fillRect(0, 0, w, h);
+  // Frame
+  ctx.fillStyle = '#64748b';
+  ctx.fillRect(15, h*0.45, w-30, 8);  // top rail
+  ctx.fillRect(15, h*0.72, w-30, 8);  // bottom rail
+  // Legs
+  [30, w*0.5, w-45].forEach(x => {
+    ctx.fillStyle = '#94a3b8'; ctx.fillRect(x, h*0.53, 8, h*0.3);
+  });
+  // Belt
+  const bg = ctx.createLinearGradient(0, h*0.45, 0, h*0.73);
+  bg.addColorStop(0, '#334155'); bg.addColorStop(1, '#1e293b');
+  ctx.fillStyle = bg;
+  ctx.fillRect(30, h*0.45, w-60, h*0.27);
+  // Belt lines
+  ctx.strokeStyle = '#475569'; ctx.lineWidth = 1;
+  for (let i = 0; i < 6; i++) {
+    ctx.beginPath();
+    ctx.moveTo(40 + i*(w-80)/5, h*0.45);
+    ctx.lineTo(40 + i*(w-80)/5, h*0.72);
+    ctx.stroke();
+  }
+  // Drums
+  ctx.fillStyle = '#0891b2';
+  ctx.beginPath(); ctx.arc(30, h*0.585, 20, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(w-30, h*0.585, 20, 0, Math.PI*2); ctx.fill();
+  // Products on belt
+  [[50, h*0.3], [w*0.4, h*0.3], [w*0.6, h*0.3]].forEach(([x,y]) => {
+    ctx.fillStyle = '#e2e8f0'; ctx.fillRect(x, y, 32, 22);
+    ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, 32, 22);
+  });
+  // Status LED
+  const lc = status === 'critical' ? '#dc2626' : status === 'warn' ? '#f59e0b' : '#10b981';
+  ctx.fillStyle = lc; ctx.beginPath(); ctx.arc(w-18, 18, 7, 0, Math.PI*2); ctx.fill();
+}
+
+function drawHydPress(ctx, w, h, status) {
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#fef2f2'; ctx.fillRect(0, 0, w, h); // red tint for critical
+  // H-frame
+  ctx.fillStyle = '#64748b';
+  ctx.fillRect(w/2-35, 15, 70, h-30);  // center column
+  ctx.fillRect(20, 15, w-40, 20);       // top beam
+  ctx.fillRect(20, h-35, w-40, 20);     // bottom beam
+  ctx.fillRect(20, 15, 20, h-30);       // left column
+  ctx.fillRect(w-40, 15, 20, h-30);     // right column
+  // Cylinder (red - critical)
+  const cylG = ctx.createLinearGradient(w/2-25, 0, w/2+25, 0);
+  cylG.addColorStop(0, '#dc2626'); cylG.addColorStop(1, '#991b1b');
+  ctx.fillStyle = cylG;
+  ctx.beginPath(); ctx.roundRect(w/2-22, 18, 44, 55, 4); ctx.fill();
+  // Ram piston
+  ctx.fillStyle = '#b91c1c';
+  ctx.fillRect(w/2-12, 70, 24, 35);
+  // Work table
+  ctx.fillStyle = '#475569';
+  ctx.fillRect(35, h-60, w-70, 16);
+  // Die/workpiece
+  ctx.fillStyle = '#94a3b8';
+  ctx.fillRect(w/2-30, h-60, 60, 12);
+  // Oil leak indicator (critical)
+  ctx.fillStyle = '#fbbf24';
+  [45, w-55].forEach(x => {
+    ctx.beginPath(); ctx.arc(x, h*0.5, 5, 0, Math.PI*2); ctx.fill();
+  });
+  // Warning stripes
+  ctx.fillStyle = '#fef08a';
+  ctx.globalAlpha = 0.3;
+  for (let i = 0; i < 5; i++) {
+    ctx.fillRect(20, h-35 + i*4, w-40, 2);
+  }
+  ctx.globalAlpha = 1.0;
+  // Status LED (blinking red)
+  ctx.fillStyle = '#dc2626';
+  ctx.beginPath(); ctx.arc(w-18, 18, 8, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#fca5a5';
+  ctx.beginPath(); ctx.arc(w-21, 15, 3, 0, Math.PI*2); ctx.fill();
+  // Warning label
+  ctx.fillStyle = '#dc2626';
+  ctx.font = 'bold 10px Inter,sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('要点検', w/2, h-8);
+}
+
+function drawPump(ctx, w, h, status) {
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#f0fdf4'; ctx.fillRect(0, 0, w, h); // green tint for ok
+  // Base plate
+  ctx.fillStyle = '#64748b';
+  ctx.fillRect(20, h-30, w-40, 12);
+  // Motor body
+  const mg = ctx.createLinearGradient(0, h*0.3, 0, h*0.8);
+  mg.addColorStop(0, '#475569'); mg.addColorStop(1, '#334155');
+  ctx.fillStyle = mg;
+  ctx.beginPath(); ctx.roundRect(w*0.5, h*0.3, w*0.38, h*0.5, 6); ctx.fill();
+  // Motor cooling fins
+  ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2;
+  for (let i = 0; i < 5; i++) {
+    ctx.beginPath();
+    ctx.moveTo(w*0.5, h*0.35 + i*12);
+    ctx.lineTo(w*0.88, h*0.35 + i*12);
+    ctx.stroke();
+  }
+  // Pump body (circular volute)
+  const pg = ctx.createRadialGradient(w*0.3, h*0.55, 5, w*0.3, h*0.55, 42);
+  pg.addColorStop(0, '#0891b2'); pg.addColorStop(1, '#0e7490');
+  ctx.fillStyle = pg;
+  ctx.beginPath(); ctx.arc(w*0.3, h*0.55, 42, 0, Math.PI*2); ctx.fill();
+  // Coupling guard
+  ctx.fillStyle = '#94a3b8';
+  ctx.beginPath(); ctx.roundRect(w*0.45, h*0.43, 20, 22, 3); ctx.fill();
+  // Inlet pipe (bottom)
+  ctx.fillStyle = '#64748b';
+  ctx.fillRect(w*0.24, h*0.78, 12, 22);
+  // Outlet pipe (right/top)
+  ctx.fillRect(w*0.38, h*0.4, 22, 12);
+  // Flange bolts
+  ctx.fillStyle = '#94a3b8';
+  [[-30,0],[30,0],[0,-30],[0,30]].forEach(([dx,dy]) => {
+    ctx.beginPath(); ctx.arc(w*0.3+dx, h*0.55+dy, 4, 0, Math.PI*2); ctx.fill();
+  });
+  // Pressure gauge
+  ctx.fillStyle = '#e2e8f0'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(w*0.3, h*0.2, 16, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#10b981';
+  ctx.fillRect(w*0.3, h*0.2-2, 2, -10); // gauge needle
+  // Status LED
+  const lc = status === 'critical' ? '#dc2626' : status === 'warn' ? '#f59e0b' : '#10b981';
+  ctx.fillStyle = lc; ctx.beginPath(); ctx.arc(w-18, 18, 7, 0, Math.PI*2); ctx.fill();
+}
+
+// ═══════════════════════════════════════════════
+// Equipment Monitor init
+// ═══════════════════════════════════════════════
+const SENSOR_LABELS = {
+  rpm: '回転数', temp: '温度', vib: '振動', load: '負荷率',
+  cycle: 'サイクル', press: '圧力', cool: '冷却水温',
+  speed: '速度', tension: 'ベルト張力',
+  flow: '流量', noise: '騒音',
+  oil: 'オイル残量',
+};
+
+function initMonitor() {
+  const grid = document.getElementById('equipGrid');
+  grid.innerHTML = '';
+  Object.keys(MACHINES).forEach(key => {
+    const m = MACHINES[key];
+    const statusLabel = m.status === 'critical' ? '要緊急対応' : m.status === 'warn' ? '注意' : '稼働中';
+    const statusClass = m.status === 'critical' ? 'status-critical' : m.status === 'warn' ? 'status-warn' : 'status-running';
+    const ledClass    = m.status === 'critical' ? 'led-red' : m.status === 'warn' ? 'led-amber' : 'led-green';
+
+    const sensorHTML = Object.keys(m.sensors).map(sk => {
+      const sc = m.sensorStatus[sk] || 'ok';
+      const valClass = sc === 'critical' ? 'sensor-val critical' : sc === 'warn' ? 'sensor-val warn' : 'sensor-val';
+      return `<div class="sensor-item">
+        <div class="sensor-label">${SENSOR_LABELS[sk] || sk}</div>
+        <div class="${valClass}">${m.sensors[sk]}</div>
+      </div>`;
+    }).join('');
+
+    const card = document.createElement('div');
+    card.className = 'equip-card';
+    card.innerHTML = `
+      <div class="equip-canvas-wrap">
+        <canvas id="ecanvas-${key}" width="320" height="160"></canvas>
+        <div class="equip-status-badge ${statusClass}">${statusLabel}</div>
+      </div>
+      <div class="equip-info">
+        <div class="equip-name"><span class="status-led ${ledClass}"></span>${m.name}</div>
+        <div class="equip-line">${m.line} · 健全度 ${m.health}%</div>
+        <div class="sensor-grid">${sensorHTML}</div>
+        <div class="equip-hours">累計稼働: ${m.hours} · 前回保全: ${m.last}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+
+    // Draw canvas
+    const canvas = card.querySelector(`#ecanvas-${key}`);
+    const ctx = canvas.getContext('2d');
+    m.draw(ctx, 320, 160, m.status);
+  });
+}
+
+// ═══════════════════════════════════════════════
+// Calendar
+// ═══════════════════════════════════════════════
+const EVENTS = {
+  5:  [{ text: 'HP-800 緊急', cls: 'urgent' }],
+  8:  [{ text: 'HP-800 緊急点検', cls: 'urgent' }],
+  12: [{ text: 'MC-5000 ベアリング', cls: 'inspect' }],
+  13: [{ text: 'IM-300 記録確認', cls: 'done' }],
+  15: [{ text: 'CV-200 ベルト', cls: 'plan' }],
+  20: [{ text: 'IM-300 金型清掃', cls: 'plan' }],
+  22: [{ text: 'CP-100 フィルター', cls: 'plan' }],
+  28: [{ text: '月次総合点検', cls: 'plan' }],
+};
+const COMPLETED = { 1: 'done', 2: 'done', 3: 'done', 4: 'done', 7: 'done' };
+
+function initCalendar() {
+  const grid = document.getElementById('calGrid');
+  const dows = ['月','火','水','木','金','土','日'];
+  const today = 4; // May 4
+
+  grid.innerHTML = '';
+  dows.forEach(d => {
+    const h = document.createElement('div');
+    h.className = 'cal-dow'; h.textContent = d;
+    grid.appendChild(h);
+  });
+  // May 2026 starts on Friday (index 4 in Mon-Sun week)
+  for (let i = 0; i < 4; i++) {
+    const empty = document.createElement('div');
+    empty.className = 'cal-day empty';
+    grid.appendChild(empty);
+  }
+  for (let d = 1; d <= 31; d++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-day' + (d === today ? ' today' : '');
+    let html = `<div class="cal-day-num">${d}</div>`;
+    if (COMPLETED[d]) {
+      html += `<div class="cal-event done">✓ 完了</div>`;
+    }
+    (EVENTS[d] || []).forEach(ev => {
+      html += `<div class="cal-event ${ev.cls}">${ev.text}</div>`;
+    });
+    cell.innerHTML = html;
+    grid.appendChild(cell);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// Init on load
+// ═══════════════════════════════════════════════
+window.addEventListener('load', () => {
+  initDashboard();
+  initMonitor();
+  initCalendar();
+  // Set default machine meta
+  const m = MACHINES['M1'];
+  document.getElementById('meta-age').textContent   = m.age;
+  document.getElementById('meta-hours').textContent = m.hours;
+  document.getElementById('meta-last').textContent  = m.last;
+  document.getElementById('meta-next').textContent  = m.next;
+});
+</script>
+</body>
+</html>
