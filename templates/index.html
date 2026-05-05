@@ -55,14 +55,14 @@
     .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
     .logo-icon {
       width: 36px; height: 36px; border-radius: 9px;
-      background: linear-gradient(135deg, #0891b2 0%, #2563eb 100%);
+      background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 2px 12px rgba(8,145,178,.45);
       flex-shrink: 0;
     }
     .logo-text { color: #fff; }
     .logo-name { font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
-    .logo-sub  { font-size: 9px; font-weight: 600; color: rgba(255,255,255,.45); letter-spacing: .12em; text-transform: uppercase; }
+    .logo-sub  { font-size: 10px; font-weight: 600; color: rgba(255,255,255,.45); letter-spacing: .12em; text-transform: uppercase; }
 
     /* ① Nav tabs: SVG icons */
     .nav-tabs { display: flex; gap: 2px; flex: 1; }
@@ -99,7 +99,7 @@
     .dark-toggle:hover { background: rgba(255,255,255,.2); }
 
     /* ── Page Layout ── */
-    .page { display: none; padding: 28px 28px 48px; max-width: 1280px; margin: 0 auto; }
+    .page { display: none; padding: 32px 32px 72px; max-width: 1280px; margin: 0 auto; }
     .page.active { display: block; }
     .sec-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
     .sec-title { font-size: 22px; font-weight: 800; color: var(--navy); letter-spacing: -.02em; }
@@ -110,7 +110,7 @@
       background: linear-gradient(135deg, #0f172a 0%, #0c2540 100%);
       border-radius: 16px;
       padding: 22px 32px;
-      margin-bottom: 24px;
+      margin-bottom: 36px;
       border: 1px solid rgba(8,145,178,.2);
       position: relative;
       overflow: hidden;
@@ -122,7 +122,7 @@
     .hero-card::before {
       content: '';
       position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-      background: linear-gradient(180deg, #0891b2, #2563eb);
+      background: linear-gradient(180deg, #0891b2, #0e7490);
     }
     .hero-card::after {
       content: '';
@@ -132,31 +132,47 @@
       pointer-events: none;
     }
     .hero-live-label {
-      font-size: 9px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase;
+      font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
       color: rgba(8,145,178,.9); font-family: 'IBM Plex Mono', monospace;
-      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+      margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
     }
     .hero-live-dot {
       width: 6px; height: 6px; border-radius: 50%; background: #0891b2;
       box-shadow: 0 0 0 3px rgba(8,145,178,.3); animation: pulse-badge 2s infinite;
       flex-shrink: 0;
     }
+    /* ② Heroic OEE layout: dominant left + 3 secondary right */
     .hero-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+      display: grid; grid-template-columns: 280px 1fr; gap: 0; align-items: center;
     }
+    .hero-oee-block {
+      padding-right: 40px; margin-right: 40px;
+      border-right: 1px solid rgba(255,255,255,.1);
+    }
+    .hero-oee-num {
+      font-size: 80px; font-weight: 900; color: #fff; letter-spacing: -.05em; line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .hero-oee-unit { font-size: 28px; font-weight: 700; color: rgba(255,255,255,.5); }
+    .hero-oee-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(255,255,255,.35); margin-bottom: 10px;
+    }
+    .hero-oee-trend { font-size: 13px; font-weight: 600; color: #34d399; margin-top: 8px; }
+    .hero-secondary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
     .hero-metric {
-      padding-right: 28px; margin-right: 28px;
+      padding: 0 28px;
       border-right: 1px solid rgba(255,255,255,.07);
     }
-    .hero-metric:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+    .hero-metric:last-child { border-right: none; }
     .hero-metric-label {
-      font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
       color: rgba(255,255,255,.32); margin-bottom: 8px;
     }
     .hero-metric-val {
-      font-size: 30px; font-weight: 900; color: #fff; letter-spacing: -.03em; line-height: 1;
+      font-size: 28px; font-weight: 900; color: #fff; letter-spacing: -.03em; line-height: 1;
     }
-    .hero-metric-val .unit { font-size: 15px; font-weight: 600; color: rgba(255,255,255,.45); margin-left: 1px; }
+    .hero-metric-val .unit { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.45); margin-left: 1px; }
     .hero-metric-sub { font-size: 11px; color: rgba(255,255,255,.32); margin-top: 5px; }
     .hero-metric-sub .up   { color: #34d399; }
     .hero-metric-sub .down { color: #f87171; }
@@ -168,13 +184,13 @@
 
     /* ── Buttons ── */
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
-    .btn-primary { background: var(--blue); color: #fff; }
-    .btn-primary:hover { background: #1d4ed8; }
+    .btn-primary { background: var(--teal); color: #fff; }
+    .btn-primary:hover { background: #0e7490; }
     .btn-teal { background: var(--teal); color: #fff; }
     .btn-teal:hover { background: #0e7490; }
     .btn-outline { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
     .btn-outline:hover { background: var(--bg); }
-    .btn-ai { background: linear-gradient(135deg, #0891b2, #2563eb); color: #fff; font-size: 14px; padding: 10px 22px; }
+    .btn-ai { background: linear-gradient(135deg, #0891b2, #0e7490); color: #fff; font-size: 13px; padding: 10px 22px; }
     .btn-ai:hover { opacity: .92; }
     .btn-ai:disabled { opacity: .5; cursor: not-allowed; }
 
@@ -190,7 +206,7 @@
     .card-title svg { color: var(--teal); flex-shrink: 0; }
 
     /* ── KPI Cards ── */
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 12px; }
     .kpi-card {
       background: var(--surface); border-radius: 12px; border: 1px solid var(--border);
       box-shadow: var(--shadow); padding: 20px 22px;
@@ -205,7 +221,7 @@
     .kpi-card.c-amber::before { background: linear-gradient(90deg, transparent, #d97706, transparent); }
     .kpi-label { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
     .kpi-val   { font-size: 32px; font-weight: 900; letter-spacing: -.03em; color: var(--navy); line-height: 1; }
-    .kpi-sub   { font-size: 12px; color: var(--text-3); margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+    .kpi-sub   { font-size: 11px; color: var(--text-3); margin-top: 6px; display: flex; align-items: center; gap: 4px; }
     .kpi-up   { color: var(--green); }
     .kpi-down { color: var(--red); }
     /* ④ Sparkline replaces bar */
@@ -213,7 +229,8 @@
     .kpi-sparkline svg { display: block; }
 
     /* ── Charts grid ── */
-    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .charts-section { margin-top: 28px; }
 
     /* ⑦ Enhanced Alerts */
     .alert-list { display: flex; flex-direction: column; gap: 10px; }
@@ -238,9 +255,9 @@
     @keyframes pulse-alert { 0%,100%{box-shadow:0 0 0 3px rgba(220,38,38,.2)} 50%{box-shadow:0 0 0 6px rgba(220,38,38,.05)} }
     .alert-body { flex: 1; min-width: 0; }
     .alert-name { font-size: 13px; font-weight: 700; color: var(--text); }
-    .alert-desc { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+    .alert-desc { font-size: 13px; color: var(--text-2); margin-top: 2px; }
     .alert-time { font-size: 10px; color: var(--text-3); font-family: 'IBM Plex Mono', monospace; margin-top: 2px; }
-    .alert-action { font-size: 11px; font-weight: 600; color: var(--blue); cursor: pointer; white-space: nowrap; }
+    .alert-action { font-size: 11px; font-weight: 600; color: var(--teal); cursor: pointer; white-space: nowrap; }
 
     /* ── AI Prediction page ── */
     .predict-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
@@ -256,7 +273,7 @@
     body.dark .mach-btn.active { background: rgba(8,145,178,.12); }
     .mach-status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .mach-info { flex: 1; min-width: 0; }
-    .mach-name { font-size: 12px; font-weight: 700; color: var(--text); }
+    .mach-name { font-size: 13px; font-weight: 700; color: var(--text); }
     .mach-line { font-size: 11px; color: var(--text-3); margin-top: 1px; }
     .mach-score-mini { font-size: 13px; font-weight: 800; }
     .mach-btn.critical .mach-status-dot { background: var(--red); animation: pulse-alert 1.5s infinite; }
@@ -267,11 +284,11 @@
     .mach-btn.ok       .mach-score-mini { color: var(--green); }
     .mach-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
     .mach-meta-item { background: var(--bg); border-radius: 8px; padding: 10px 12px; transition: background .2s; }
-    .mach-meta-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; }
-    .mach-meta-val   { font-size: 15px; font-weight: 800; color: var(--navy); margin-top: 3px; }
+    .mach-meta-label { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; }
+    .mach-meta-val   { font-size: 13px; font-weight: 800; color: var(--navy); margin-top: 3px; }
 
     /* ⑥ Prediction timestamp */
-    .pred-ts { font-size: 10px; color: var(--text-3); font-family: 'IBM Plex Mono', monospace; text-align: center; margin-top: 4px; }
+    .pred-ts { font-size: 11px; color: var(--text-3); font-family: 'IBM Plex Mono', monospace; text-align: center; margin-top: 4px; }
 
     /* Health gauge */
     .gauge-panel { display: flex; flex-direction: column; align-items: center; padding: 24px 20px 16px; }
@@ -286,21 +303,21 @@
     body.dark .gauge-status.critical { background: rgba(220,38,38,.15); }
     body.dark .gauge-status.warn     { background: rgba(217,119,6,.15); }
     body.dark .gauge-status.ok       { background: rgba(5,150,105,.15); }
-    .ai-loading { display: none; align-items: center; gap: 8px; font-size: 12px; color: var(--teal); font-weight: 600; margin-bottom: 8px; }
+    .ai-loading { display: none; align-items: center; gap: 8px; font-size: 13px; color: var(--teal); font-weight: 600; margin-bottom: 8px; }
     .ai-loading.show { display: flex; }
     .ai-spin { width: 16px; height: 16px; border: 2px solid #e0f2fe; border-top-color: var(--teal); border-radius: 50%; animation: spin .7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .comp-list { display: flex; flex-direction: column; gap: 12px; }
     .comp-item { display: flex; align-items: center; gap: 12px; }
-    .comp-name { font-size: 12px; font-weight: 600; color: var(--text); width: 150px; flex-shrink: 0; }
+    .comp-name { font-size: 13px; font-weight: 600; color: var(--text); width: 150px; flex-shrink: 0; }
     .comp-bar-bg   { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
     .comp-bar-fill { height: 100%; border-radius: 4px; width: 0; transition: width 0.8s ease-out; }
-    .comp-pct { font-size: 12px; font-weight: 700; width: 40px; text-align: right; }
+    .comp-pct { font-size: 13px; font-weight: 700; width: 40px; text-align: right; }
     .prob-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
     .prob-card { text-align: center; padding: 14px 10px; border-radius: 10px; border: 1px solid var(--border); transition: all .2s; }
     .prob-period { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; }
     .prob-val    { font-size: 28px; font-weight: 900; margin: 6px 0 4px; }
-    .prob-label  { font-size: 10px; color: var(--text-3); }
+    .prob-label  { font-size: 11px; color: var(--text-3); }
     .prob-critical { border-color: #fecaca; background: #fef2f2; }
     .prob-critical .prob-val { color: var(--red); }
     .prob-warn     { border-color: #fed7aa; background: #fffbeb; }
@@ -312,7 +329,7 @@
     body.dark .prob-ok       { background: rgba(5,150,105,.1);  border-color: rgba(5,150,105,.25); }
     .rec-list { display: flex; flex-direction: column; gap: 10px; }
     .rec-item { display: flex; gap: 12px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); }
-    .rec-priority { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; height: fit-content; flex-shrink: 0; margin-top: 2px; }
+    .rec-priority { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; height: fit-content; flex-shrink: 0; margin-top: 2px; }
     .rec-high   { background: #fef2f2; color: var(--red); }
     .rec-medium { background: #fffbeb; color: var(--amber); }
     .rec-low    { background: #f0fdf4; color: var(--green); }
@@ -335,11 +352,11 @@
     body.dark .status-warn     { background: rgba(217,119,6,.2);  color: #fbbf24; }
     body.dark .status-critical { background: rgba(220,38,38,.2);  color: #f87171; }
     .equip-info { padding: 14px 16px; }
-    .equip-name { font-size: 14px; font-weight: 800; color: var(--navy); }
+    .equip-name { font-size: 13px; font-weight: 800; color: var(--navy); }
     .equip-line { font-size: 11px; color: var(--text-3); margin-bottom: 10px; }
     .sensor-grid  { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .sensor-label { font-size: 10px; color: var(--text-3); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
-    .sensor-val   { font-size: 14px; font-weight: 800; color: var(--text); font-family: 'IBM Plex Mono', monospace; }
+    .sensor-label { font-size: 11px; color: var(--text-3); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+    .sensor-val   { font-size: 13px; font-weight: 800; color: var(--text); font-family: 'IBM Plex Mono', monospace; }
     .sensor-val.warn     { color: var(--amber); }
     .sensor-val.critical { color: var(--red); }
     .equip-hours  { font-size: 11px; color: var(--text-3); margin-top: 10px; border-top: 1px solid var(--border); padding-top: 8px; }
@@ -382,8 +399,8 @@
     .maint-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
     .maint-item-name { font-size: 13px; font-weight: 700; color: var(--text); }
     .maint-date      { font-size: 11px; font-weight: 600; color: var(--text-3); font-family: 'IBM Plex Mono', monospace; }
-    .maint-item-desc { font-size: 12px; color: var(--text-2); }
-    .maint-tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; margin-top: 6px; display: inline-block; }
+    .maint-item-desc { font-size: 13px; color: var(--text-2); }
+    .maint-tag { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px; margin-top: 6px; display: inline-block; }
     .tag-urgent  { background: #fef2f2; color: var(--red); }
     .tag-plan    { background: #eff6ff; color: var(--blue); }
     .tag-inspect { background: #fefce8; color: #a16207; }
@@ -484,33 +501,42 @@
     </div>
   </div>
 
-  <!-- ③ Hero Summary Card -->
+  <!-- ③ Hero Summary Card — OEE dominant -->
   <div class="hero-card">
     <div class="hero-live-label"><div class="hero-live-dot"></div>PLANT OPERATIONS — LIVE MONITORING</div>
     <div class="hero-grid">
-      <div class="hero-metric">
-        <div class="hero-metric-label">全体 OEE</div>
-        <div class="hero-metric-val" id="hero-oee">—<span class="unit">%</span></div>
-        <div class="hero-metric-sub"><span class="up">↑ 5.2pt</span> 先月比</div>
+
+      <!-- ② Dominant OEE number -->
+      <div class="hero-oee-block">
+        <div class="hero-oee-label">総合設備効率 OEE</div>
+        <div>
+          <span class="hero-oee-num" id="hero-oee">—</span><span class="hero-oee-unit">%</span>
+        </div>
+        <div class="hero-oee-trend">↑ 5.2pt 先月比</div>
       </div>
-      <div class="hero-metric">
-        <div class="hero-metric-label">設備稼働状況</div>
-        <div class="hero-chips" style="margin-top:8px">
-          <span class="hero-chip ok">稼働中 3台</span>
-          <span class="hero-chip warn">警告 1台</span>
-          <span class="hero-chip critical">緊急 1台</span>
+
+      <!-- 3 secondary metrics -->
+      <div class="hero-secondary">
+        <div class="hero-metric">
+          <div class="hero-metric-label">設備稼働状況</div>
+          <div class="hero-chips" style="margin-top:8px">
+            <span class="hero-chip ok">稼働中 3台</span>
+            <span class="hero-chip warn">警告 1台</span>
+            <span class="hero-chip critical">緊急 1台</span>
+          </div>
+        </div>
+        <div class="hero-metric">
+          <div class="hero-metric-label">今月の MTBF</div>
+          <div class="hero-metric-val" id="hero-mtbf">—<span class="unit">h</span></div>
+          <div class="hero-metric-sub">達成率 <span class="up">94.2%</span></div>
+        </div>
+        <div class="hero-metric">
+          <div class="hero-metric-label">次回計画保全</div>
+          <div class="hero-metric-val" style="font-size:22px;margin-top:4px;letter-spacing:.02em">05 / 08</div>
+          <div class="hero-metric-sub" style="color:rgba(248,113,113,.8)">HP-800 緊急点検（3日後）</div>
         </div>
       </div>
-      <div class="hero-metric">
-        <div class="hero-metric-label">今月の MTBF</div>
-        <div class="hero-metric-val" id="hero-mtbf">—<span class="unit">h</span></div>
-        <div class="hero-metric-sub">MTBF達成率 <span class="up">94.2%</span></div>
-      </div>
-      <div class="hero-metric">
-        <div class="hero-metric-label">次回計画保全</div>
-        <div class="hero-metric-val" style="font-size:24px;margin-top:2px">05 / 08</div>
-        <div class="hero-metric-sub" style="color:rgba(248,113,113,.7)">HP-800 緊急点検（3日後）</div>
-      </div>
+
     </div>
   </div>
 
@@ -544,6 +570,7 @@
   </div>
 
   <!-- Charts -->
+  <div class="charts-section">
   <div class="charts-grid">
     <div class="card">
       <!-- ② SVG card title icon -->
@@ -624,6 +651,7 @@
       </div>
     </div>
   </div>
+  </div><!-- /.charts-section -->
 </div>
 
 <!-- ═══════════════════════════════════════════
@@ -1007,7 +1035,7 @@ function initDashboard() {
     animateCounter(document.getElementById('k-mtbf'),  847,  'h', 0);
     animateCounter(document.getElementById('k-mttr'),  2.3,  'h', 1);
     // ③ Hero counters
-    animateCounter(document.getElementById('hero-oee'),  87.3, '', 1);
+    animateCounter(document.getElementById('hero-oee'), 87.3, '', 1);
     animateCounter(document.getElementById('hero-mtbf'), 847,  '', 0);
     // ④ Sparklines
     document.getElementById('spark-oee').innerHTML   = sparkline([80.7,82.9,84.2,82.1,85.8,87.3], '#0891b2');
@@ -1184,119 +1212,438 @@ function drawGrid(ctx, w, h, isDark) {
   for (let y = 0; y <= h; y += step) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
 }
 
+// CNC Machining Center — recognizable silhouette: column + spindle head + table + tool
 function drawCNC(ctx, w, h, status, isDark) {
   ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = isDark ? '#0e1c2e' : '#f1f5f9'; ctx.fillRect(0,0,w,h);
-  drawGrid(ctx, w, h, isDark); // ⑨
-  const g = ctx.createLinearGradient(20,0,w-20,0);
-  g.addColorStop(0, '#94a3b8'); g.addColorStop(1, '#64748b');
-  ctx.fillStyle = g; ctx.beginPath(); ctx.roundRect(20,20,w-40,h-40,8); ctx.fill();
-  ctx.fillStyle = '#e0f2fe'; ctx.strokeStyle = '#0891b2'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.roundRect(35,35,w-100,h-70,4); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = '#cbd5e1'; ctx.fillRect(55,h-70,60,20);
-  ctx.fillStyle = '#94a3b8'; ctx.fillRect(60,h-80,50,12);
-  ctx.fillStyle = '#475569'; ctx.fillRect(w/2-50,25,15,40);
-  ctx.beginPath(); ctx.arc(w/2-43,65,6,0,Math.PI*2);
-  ctx.fillStyle = '#334155'; ctx.fill();
-  ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.roundRect(w-75,30,50,90,4); ctx.fill();
-  [[5,10,'#10b981'],[5,25,'#3b82f6'],[5,40,'#f59e0b'],[25,10,'#94a3b8'],[25,25,'#94a3b8']].forEach(([x,y,c]) => {
-    ctx.fillStyle = c; ctx.beginPath(); ctx.arc(w-70+x,35+y,4,0,Math.PI*2); ctx.fill();
+  const bg = isDark ? '#0e1c2e' : '#f1f5f9';
+  ctx.fillStyle = bg; ctx.fillRect(0,0,w,h);
+  drawGrid(ctx, w, h, isDark);
+  const dk = isDark;
+  const steel  = dk ? '#2d3e55' : '#8fa3b8';
+  const steel2 = dk ? '#1e2e42' : '#6b7f94';
+  const panel  = dk ? '#131f35' : '#1e293b';
+  const hi     = dk ? '#3d556e' : '#b0c4d4';
+
+  // Base platform (full width)
+  ctx.fillStyle = steel2;
+  ctx.beginPath(); ctx.roundRect(8, h-22, w-16, 16, 3); ctx.fill();
+
+  // Column (right side, tall)
+  ctx.fillStyle = steel;
+  ctx.beginPath(); ctx.roundRect(w-64, 12, 50, h-34, 4); ctx.fill();
+  // Column highlight stripe
+  ctx.fillStyle = hi;
+  ctx.fillRect(w-60, 18, 6, h-44);
+
+  // Horizontal crossrail
+  ctx.fillStyle = steel2;
+  ctx.beginPath(); ctx.roundRect(10, 42, w-70, 18, 3); ctx.fill();
+
+  // Spindle head (slides along crossrail)
+  const spx = w*0.38;
+  ctx.fillStyle = panel;
+  ctx.beginPath(); ctx.roundRect(spx-20, 30, 40, 52, 5); ctx.fill();
+  // Spindle nose (cone shape)
+  ctx.fillStyle = steel;
+  ctx.beginPath();
+  ctx.moveTo(spx-10, 82); ctx.lineTo(spx+10, 82);
+  ctx.lineTo(spx+6, 98); ctx.lineTo(spx-6, 98);
+  ctx.closePath(); ctx.fill();
+  // Tool bit (end mill)
+  ctx.fillStyle = dk ? '#7dd3fc' : '#0891b2';
+  ctx.fillRect(spx-3, 98, 6, 14);
+  ctx.beginPath(); ctx.arc(spx, 112, 3, 0, Math.PI*2); ctx.fill();
+
+  // Work table
+  ctx.fillStyle = steel;
+  ctx.beginPath(); ctx.roundRect(14, h-40, w-80, 20, 3); ctx.fill();
+  // T-slots on table
+  ctx.strokeStyle = steel2; ctx.lineWidth = 1.5;
+  [30, 60, 90, 120, 150].filter(x => x < w-90).forEach(x => {
+    ctx.beginPath(); ctx.moveTo(x, h-40); ctx.lineTo(x, h-22); ctx.stroke();
   });
+  // Workpiece on table
+  ctx.fillStyle = dk ? '#4a6480' : '#94b4c8';
+  ctx.beginPath(); ctx.roundRect(spx-28, h-55, 56, 16, 2); ctx.fill();
+
+  // Control panel
+  ctx.fillStyle = panel;
+  ctx.beginPath(); ctx.roundRect(w-60, h-60, 44, 38, 4); ctx.fill();
+  // Screen
+  ctx.fillStyle = dk ? '#0f4c75' : '#1a6595';
+  ctx.beginPath(); ctx.roundRect(w-56, h-57, 30, 20, 2); ctx.fill();
+  ctx.fillStyle = dk ? '#38bdf8' : '#7dd3fc';
+  ctx.font = 'bold 7px monospace'; ctx.textAlign = 'left';
+  ctx.fillText('X:+124', w-55, h-48);
+  ctx.fillText('Y:-038', w-55, h-41);
+
+  // Status LED
   const lc = status==='critical'?'#dc2626':status==='warn'?'#f59e0b':'#10b981';
-  ctx.fillStyle = lc; ctx.beginPath(); ctx.arc(w-30,22,7,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = 'rgba(255,255,255,.4)'; ctx.beginPath(); ctx.arc(w-33,19,3,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = lc;
+  ctx.beginPath(); ctx.arc(w-20, 20, 7, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.5)';
+  ctx.beginPath(); ctx.arc(w-23, 17, 3, 0, Math.PI*2); ctx.fill();
 }
 
+// Injection Molding Machine — horizontal clamping unit + barrel + hopper
 function drawInjection(ctx, w, h, status, isDark) {
   ctx.clearRect(0,0,w,h);
   ctx.fillStyle = isDark ? '#0e1c2e' : '#f1f5f9'; ctx.fillRect(0,0,w,h);
   drawGrid(ctx, w, h, isDark);
-  ctx.fillStyle = '#64748b'; ctx.fillRect(10,h-35,w-20,18);
-  ctx.fillStyle = '#94a3b8';
-  [h*.3,h*.45,h*.6,h*.75].forEach(y => { ctx.fillRect(25,y,w-50,5); });
-  const pg = ctx.createLinearGradient(0,0,30,0);
-  pg.addColorStop(0,'#475569'); pg.addColorStop(1,'#64748b');
-  ctx.fillStyle = pg; ctx.beginPath(); ctx.roundRect(15,h*.22,30,h*.6,4); ctx.fill();
-  ctx.fillStyle = '#475569'; ctx.beginPath(); ctx.roundRect(w-55,h*.22,30,h*.6,4); ctx.fill();
-  ctx.fillStyle = '#1e293b'; ctx.fillRect(45,h*.28,28,h*.5);
-  ctx.fillStyle = '#334155'; ctx.fillRect(w-73,h*.28,18,h*.5);
-  const barG = ctx.createLinearGradient(0,h*.4,0,h*.6);
-  barG.addColorStop(0,'#94a3b8'); barG.addColorStop(1,'#64748b');
-  ctx.fillStyle = barG; ctx.beginPath(); ctx.roundRect(w-95,h*.4,30,h*.2,6); ctx.fill();
-  ctx.fillStyle = '#0891b2'; ctx.beginPath(); ctx.roundRect(w-25,h*.35,18,h*.3,4); ctx.fill();
+  const dk = isDark;
+  const steel  = dk ? '#2d3e55' : '#8fa3b8';
+  const steel2 = dk ? '#1e2e42' : '#6b7f94';
+  const panel  = dk ? '#131f35' : '#1e293b';
+
+  // Machine bed
+  ctx.fillStyle = steel2;
+  ctx.beginPath(); ctx.roundRect(8, h-20, w-16, 14, 3); ctx.fill();
+
+  // ── Clamping unit (left half) ──
+  const clampX = 10, clampW = w*0.48;
+
+  // Fixed platen
+  ctx.fillStyle = steel;
+  ctx.beginPath(); ctx.roundRect(clampX, h*0.22, 22, h*0.56, 4); ctx.fill();
+
+  // Moving platen
+  ctx.fillStyle = steel;
+  ctx.beginPath(); ctx.roundRect(clampX + clampW - 22, h*0.22, 22, h*0.56, 4); ctx.fill();
+
+  // 4 tie bars
+  ctx.strokeStyle = steel2; ctx.lineWidth = 5; ctx.lineCap = 'round';
+  [[h*0.28],[h*0.42],[h*0.58],[h*0.72]].forEach(([y]) => {
+    ctx.beginPath(); ctx.moveTo(clampX+22, y); ctx.lineTo(clampX+clampW-22, y); ctx.stroke();
+  });
+
+  // Mold halves (between platens)
+  const mx = clampX + clampW*0.3;
+  ctx.fillStyle = panel;
+  ctx.beginPath(); ctx.roundRect(mx, h*0.28, 22, h*0.44, 2); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(mx+24, h*0.28, 22, h*0.44, 2); ctx.fill();
+  // Parting line
+  ctx.strokeStyle = dk ? '#0891b2' : '#0e7490'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(mx+22, h*0.28); ctx.lineTo(mx+22, h*0.72); ctx.stroke();
+
+  // Ejector (hydraulic cylinder at right of clamp)
+  ctx.fillStyle = steel2;
+  ctx.beginPath(); ctx.roundRect(clampX+clampW-8, h*0.4, 12, h*0.2, 3); ctx.fill();
+
+  // ── Injection unit (right half) ──
+  const injX = w*0.52;
+
+  // Barrel (long horizontal cylinder)
+  const bG = ctx.createLinearGradient(0, h*0.43, 0, h*0.57);
+  bG.addColorStop(0, steel); bG.addColorStop(1, steel2);
+  ctx.fillStyle = bG;
+  ctx.beginPath(); ctx.roundRect(injX, h*0.43, w*0.36, h*0.14, 4); ctx.fill();
+  // Heater bands on barrel
+  ctx.strokeStyle = dk ? '#fbbf24' : '#d97706'; ctx.lineWidth = 2;
+  [injX+20, injX+40, injX+60, injX+80].forEach(x => {
+    if (x < injX + w*0.34) {
+      ctx.beginPath(); ctx.moveTo(x, h*0.43); ctx.lineTo(x, h*0.57); ctx.stroke();
+    }
+  });
+
+  // Nozzle tip (left of barrel)
+  ctx.fillStyle = steel2;
+  ctx.beginPath();
+  ctx.moveTo(injX, h*0.46); ctx.lineTo(injX-10, h*0.5); ctx.lineTo(injX, h*0.54);
+  ctx.closePath(); ctx.fill();
+
+  // Hopper (above right end of barrel)
+  const hopX = injX + w*0.28;
+  ctx.fillStyle = steel;
+  ctx.beginPath();
+  ctx.moveTo(hopX-18, h*0.18); ctx.lineTo(hopX+18, h*0.18);
+  ctx.lineTo(hopX+8,  h*0.43); ctx.lineTo(hopX-8,  h*0.43);
+  ctx.closePath(); ctx.fill();
+  // Hopper opening lines
+  ctx.strokeStyle = steel2; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(hopX-18, h*0.18); ctx.lineTo(hopX-20, h*0.13); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(hopX+18, h*0.18); ctx.lineTo(hopX+20, h*0.13); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(hopX-20, h*0.13); ctx.lineTo(hopX+20, h*0.13); ctx.stroke();
+
+  // Drive motor unit
+  ctx.fillStyle = panel;
+  ctx.beginPath(); ctx.roundRect(w-36, h*0.36, 28, h*0.28, 4); ctx.fill();
+  ctx.fillStyle = dk ? '#0891b2' : '#0e7490';
+  ctx.beginPath(); ctx.arc(w-22, h*0.5, 9, 0, Math.PI*2); ctx.fill();
+
+  // Status LED
   const lc = status==='critical'?'#dc2626':status==='warn'?'#f59e0b':'#10b981';
-  ctx.fillStyle = lc; ctx.beginPath(); ctx.arc(w-18,18,7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = lc;
+  ctx.beginPath(); ctx.arc(w-20, 18, 7, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.4)';
+  ctx.beginPath(); ctx.arc(w-23, 15, 3, 0, Math.PI*2); ctx.fill();
 }
 
+// Belt Conveyor — recognizable: two end rollers + belt + legs + boxes on belt
 function drawConveyor(ctx, w, h, status, isDark) {
   ctx.clearRect(0,0,w,h);
   ctx.fillStyle = isDark ? '#0e1c2e' : '#f1f5f9'; ctx.fillRect(0,0,w,h);
   drawGrid(ctx, w, h, isDark);
-  ctx.fillStyle = '#64748b';
-  ctx.fillRect(15,h*.45,w-30,8); ctx.fillRect(15,h*.72,w-30,8);
-  [30,w*.5,w-45].forEach(x => { ctx.fillStyle='#94a3b8'; ctx.fillRect(x,h*.53,8,h*.3); });
-  const bg = ctx.createLinearGradient(0,h*.45,0,h*.73);
-  bg.addColorStop(0,'#334155'); bg.addColorStop(1,'#1e293b');
-  ctx.fillStyle = bg; ctx.fillRect(30,h*.45,w-60,h*.27);
-  ctx.strokeStyle = '#475569'; ctx.lineWidth = 1;
-  for (let i=0;i<6;i++) { ctx.beginPath(); ctx.moveTo(40+i*(w-80)/5,h*.45); ctx.lineTo(40+i*(w-80)/5,h*.72); ctx.stroke(); }
-  ctx.fillStyle = '#0891b2';
-  ctx.beginPath(); ctx.arc(30,h*.585,20,0,Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(w-30,h*.585,20,0,Math.PI*2); ctx.fill();
-  [[50,h*.3],[w*.4,h*.3],[w*.6,h*.3]].forEach(([x,y]) => {
-    ctx.fillStyle='#e2e8f0'; ctx.fillRect(x,y,32,22);
-    ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1; ctx.strokeRect(x,y,32,22);
+  const dk = isDark;
+  const steel  = dk ? '#2d3e55' : '#7a9ab4';
+  const steel2 = dk ? '#1e2e42' : '#5a7a94';
+  const belt   = dk ? '#1a2a3a' : '#334155';
+  const roller = dk ? '#0891b2' : '#0e7490';
+
+  const beltTop = h*0.35, beltBot = h*0.50, beltY = (beltTop+beltBot)/2;
+  const lx = 30, rx = w-30;
+
+  // Support legs (angled)
+  ctx.strokeStyle = steel2; ctx.lineWidth = 4; ctx.lineCap = 'round';
+  [[lx+10, beltBot, lx-4, h-18],[lx+10, beltBot, lx+24, h-18],
+   [rx-10, beltBot, rx-24, h-18],[rx-10, beltBot, rx+4, h-18]].forEach(([x1,y1,x2,y2]) => {
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
   });
+  // Middle leg pair
+  const mx = w/2;
+  ctx.beginPath(); ctx.moveTo(mx-6, beltBot); ctx.lineTo(mx-16, h-18); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(mx+6, beltBot); ctx.lineTo(mx+16, h-18); ctx.stroke();
+
+  // Floor base rail
+  ctx.fillStyle = steel2;
+  ctx.beginPath(); ctx.roundRect(lx-12, h-20, rx-lx+24, 8, 2); ctx.fill();
+
+  // Belt frame side rails
+  ctx.fillStyle = steel;
+  ctx.beginPath(); ctx.roundRect(lx, beltTop-5, rx-lx, 5, 1); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(lx, beltBot, rx-lx, 5, 1); ctx.fill();
+
+  // Belt surface (between rollers)
+  ctx.fillStyle = belt;
+  ctx.fillRect(lx+22, beltTop, rx-lx-44, beltBot-beltTop);
+  // Belt texture lines (cross slats)
+  ctx.strokeStyle = dk ? '#2a3d50' : '#475569'; ctx.lineWidth = 1;
+  const slotW = rx - lx - 44;
+  for (let i=0; i<=slotW; i+=18) {
+    ctx.beginPath();
+    ctx.moveTo(lx+22+i, beltTop); ctx.lineTo(lx+22+i, beltBot);
+    ctx.stroke();
+  }
+  // Belt return (bottom)
+  ctx.fillStyle = dk ? '#152030' : '#263344';
+  ctx.fillRect(lx+22, beltBot+5, rx-lx-44, 6);
+
+  // End rollers (circles)
+  ctx.fillStyle = roller;
+  ctx.beginPath(); ctx.arc(lx+10, beltY, 18, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(rx-10, beltY, 18, 0, Math.PI*2); ctx.fill();
+  // Roller sheen
+  ctx.fillStyle = 'rgba(255,255,255,.15)';
+  ctx.beginPath(); ctx.arc(lx+6, beltY-5, 6, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(rx-14, beltY-5, 6, 0, Math.PI*2); ctx.fill();
+
+  // Drive motor on left roller
+  ctx.fillStyle = dk ? '#1e2e42' : '#475569';
+  ctx.beginPath(); ctx.roundRect(8, beltY-10, 14, 20, 3); ctx.fill();
+
+  // Packages on belt
+  const boxes = [[lx+50, beltTop-22, 32, 22], [lx+110, beltTop-18, 26, 18], [lx+170, beltTop-20, 28, 20]];
+  boxes.forEach(([bx, by, bw, bh]) => {
+    if (bx + bw < rx - 10) {
+      ctx.fillStyle = dk ? '#3d5a72' : '#e2e8f0';
+      ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 2); ctx.fill();
+      ctx.strokeStyle = dk ? '#4d6a82' : '#cbd5e1'; ctx.lineWidth = 1;
+      ctx.strokeRect(bx, by, bw, bh);
+      // Cross lines on box
+      ctx.beginPath(); ctx.moveTo(bx, by+bh/2); ctx.lineTo(bx+bw, by+bh/2); ctx.stroke();
+    }
+  });
+
+  // Status LED
   const lc = status==='critical'?'#dc2626':status==='warn'?'#f59e0b':'#10b981';
-  ctx.fillStyle = lc; ctx.beginPath(); ctx.arc(w-18,18,7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = lc;
+  ctx.beginPath(); ctx.arc(w-20, 18, 7, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.4)';
+  ctx.beginPath(); ctx.arc(w-23, 15, 3, 0, Math.PI*2); ctx.fill();
 }
 
+// Hydraulic Press — H-frame structure + ram + cylinder clearly visible
 function drawHydPress(ctx, w, h, status, isDark) {
   ctx.clearRect(0,0,w,h);
-  ctx.fillStyle = isDark ? 'rgba(220,38,38,.07)' : '#fef2f2'; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = isDark ? 'rgba(220,38,38,.06)' : '#fff5f5'; ctx.fillRect(0,0,w,h);
   drawGrid(ctx, w, h, isDark);
-  ctx.fillStyle = '#64748b';
-  ctx.fillRect(w/2-35,15,70,h-30); ctx.fillRect(20,15,w-40,20);
-  ctx.fillRect(20,h-35,w-40,20); ctx.fillRect(20,15,20,h-30); ctx.fillRect(w-40,15,20,h-30);
-  const cylG = ctx.createLinearGradient(w/2-25,0,w/2+25,0);
-  cylG.addColorStop(0,'#dc2626'); cylG.addColorStop(1,'#991b1b');
-  ctx.fillStyle = cylG; ctx.beginPath(); ctx.roundRect(w/2-22,18,44,55,4); ctx.fill();
-  ctx.fillStyle = '#b91c1c'; ctx.fillRect(w/2-12,70,24,35);
-  ctx.fillStyle = '#475569'; ctx.fillRect(35,h-60,w-70,16);
-  ctx.fillStyle = '#94a3b8'; ctx.fillRect(w/2-30,h-60,60,12);
-  ctx.fillStyle = '#fbbf24';
-  [45,w-55].forEach(x => { ctx.beginPath(); ctx.arc(x,h*.5,5,0,Math.PI*2); ctx.fill(); });
-  ctx.fillStyle = '#fef08a'; ctx.globalAlpha = 0.25;
-  for (let i=0;i<5;i++) { ctx.fillRect(20,h-35+i*4,w-40,2); }
-  ctx.globalAlpha = 1.0;
-  ctx.fillStyle = '#dc2626'; ctx.beginPath(); ctx.arc(w-18,18,8,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#fca5a5'; ctx.beginPath(); ctx.arc(w-21,15,3,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#dc2626'; ctx.font = 'bold 10px Inter,sans-serif'; ctx.textAlign = 'center';
-  ctx.fillText('要点検', w/2, h-8);
+  const dk = isDark;
+  const frame  = dk ? '#2d3e55' : '#6b8096';
+  const frame2 = dk ? '#1e2e42' : '#4a6070';
+  const cyl    = dk ? '#7f1d1d' : '#991b1b';
+  const ram    = dk ? '#9b2222' : '#b91c1c';
+  const alert  = '#dc2626';
+
+  // H-FRAME: two side columns
+  const col1 = 18, col2 = w-38, colW = 20;
+  ctx.fillStyle = frame;
+  ctx.beginPath(); ctx.roundRect(col1, 10, colW, h-28, 3); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(col2, 10, colW, h-28, 3); ctx.fill();
+  // Column highlight
+  ctx.fillStyle = dk ? '#3d556e' : '#8fa8be';
+  ctx.fillRect(col1+2, 14, 4, h-36);
+  ctx.fillRect(col2+2, 14, 4, h-36);
+
+  // Top crown (crosshead)
+  ctx.fillStyle = frame2;
+  ctx.beginPath(); ctx.roundRect(col1, 10, col2-col1+colW, 22, 3); ctx.fill();
+
+  // Bottom platen (press table)
+  ctx.fillStyle = frame;
+  ctx.beginPath(); ctx.roundRect(col1+2, h-36, col2-col1+colW-4, 20, 3); ctx.fill();
+  // T-slots on platen
+  ctx.strokeStyle = frame2; ctx.lineWidth = 2;
+  [w*0.3, w*0.45, w*0.6].forEach(x => {
+    ctx.beginPath(); ctx.moveTo(x, h-36); ctx.lineTo(x, h-18); ctx.stroke();
+  });
+
+  // Tie rods (4 rods linking crown to platen)
+  ctx.strokeStyle = frame2; ctx.lineWidth = 3; ctx.lineCap = 'round';
+  [[col1+colW+8],[col2-8]].forEach(([x]) => {
+    ctx.beginPath(); ctx.moveTo(x, 32); ctx.lineTo(x, h-36); ctx.stroke();
+  });
+
+  // Hydraulic cylinder (top center)
+  const cx = w/2;
+  const cG = ctx.createLinearGradient(cx-20, 0, cx+20, 0);
+  cG.addColorStop(0, cyl); cG.addColorStop(1, '#6b1010');
+  ctx.fillStyle = cG;
+  ctx.beginPath(); ctx.roundRect(cx-18, 14, 36, 44, 5); ctx.fill();
+  // Cylinder port lines
+  ctx.strokeStyle = dk ? '#991b1b' : '#7f1d1d'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(cx-18, 28); ctx.lineTo(cx-26, 28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx+18, 40); ctx.lineTo(cx+26, 40); ctx.stroke();
+
+  // Ram / plunger (extends down from cylinder)
+  const ramH = 52;
+  const rG = ctx.createLinearGradient(cx-10, 0, cx+10, 0);
+  rG.addColorStop(0, ram); rG.addColorStop(1, '#8b1616');
+  ctx.fillStyle = rG;
+  ctx.beginPath(); ctx.roundRect(cx-10, 56, 20, ramH, 2); ctx.fill();
+  // Ram end (platen face)
+  ctx.fillStyle = frame2;
+  ctx.beginPath(); ctx.roundRect(cx-22, 56+ramH, 44, 10, 2); ctx.fill();
+
+  // Danger stripes at base
+  const stripeY = h-36;
+  for (let i=0; i<6; i++) {
+    ctx.fillStyle = i%2===0 ? 'rgba(220,38,38,.18)' : 'rgba(251,191,36,.12)';
+    ctx.fillRect(col1+colW+2, stripeY-12+i*2, col2-col1-colW-4, 2);
+  }
+
+  // Warning label
+  ctx.fillStyle = alert; ctx.font = 'bold 9px Inter,sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('要緊急点検', cx, h-6);
+
+  // Status LED (large, animated-red)
+  ctx.fillStyle = alert;
+  ctx.beginPath(); ctx.arc(w-22, 20, 9, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#fca5a5';
+  ctx.beginPath(); ctx.arc(w-26, 16, 4, 0, Math.PI*2); ctx.fill();
+  // Exclamation
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 10px Inter,sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('!', w-22, 24);
 }
 
+// Centrifugal Pump — volute casing + motor + inlet/outlet pipes clearly visible
 function drawPump(ctx, w, h, status, isDark) {
   ctx.clearRect(0,0,w,h);
-  ctx.fillStyle = isDark ? 'rgba(5,150,105,.04)' : '#f0fdf4'; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = isDark ? 'rgba(5,150,105,.04)' : '#f0fdf9'; ctx.fillRect(0,0,w,h);
   drawGrid(ctx, w, h, isDark);
-  ctx.fillStyle = '#64748b'; ctx.fillRect(20,h-30,w-40,12);
-  const mg = ctx.createLinearGradient(0,h*.3,0,h*.8);
-  mg.addColorStop(0,'#475569'); mg.addColorStop(1,'#334155');
-  ctx.fillStyle = mg; ctx.beginPath(); ctx.roundRect(w*.5,h*.3,w*.38,h*.5,6); ctx.fill();
-  ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2;
-  for (let i=0;i<5;i++) { ctx.beginPath(); ctx.moveTo(w*.5,h*.35+i*12); ctx.lineTo(w*.88,h*.35+i*12); ctx.stroke(); }
-  const pg = ctx.createRadialGradient(w*.3,h*.55,5,w*.3,h*.55,42);
-  pg.addColorStop(0,'#0891b2'); pg.addColorStop(1,'#0e7490');
-  ctx.fillStyle = pg; ctx.beginPath(); ctx.arc(w*.3,h*.55,42,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#94a3b8'; ctx.beginPath(); ctx.roundRect(w*.45,h*.43,20,22,3); ctx.fill();
-  ctx.fillStyle = '#64748b'; ctx.fillRect(w*.24,h*.78,12,22); ctx.fillRect(w*.38,h*.4,22,12);
-  ctx.fillStyle = '#94a3b8';
-  [[-30,0],[30,0],[0,-30],[0,30]].forEach(([dx,dy]) => { ctx.beginPath(); ctx.arc(w*.3+dx,h*.55+dy,4,0,Math.PI*2); ctx.fill(); });
-  ctx.fillStyle='#e2e8f0'; ctx.strokeStyle='#94a3b8'; ctx.lineWidth=1.5;
-  ctx.beginPath(); ctx.arc(w*.3,h*.2,16,0,Math.PI*2); ctx.fill(); ctx.stroke();
-  ctx.fillStyle='#10b981'; ctx.fillRect(w*.3,h*.2-2,2,-10);
+  const dk = isDark;
+  const steel  = dk ? '#2d3e55' : '#7a9ab4';
+  const steel2 = dk ? '#1e2e42' : '#5a7a94';
+  const motor  = dk ? '#1a2e40' : '#334155';
+  const teal   = dk ? '#0891b2' : '#0e7490';
+  const pipe   = dk ? '#2a4055' : '#6b8096';
+
+  // Base plate
+  ctx.fillStyle = steel2;
+  ctx.beginPath(); ctx.roundRect(16, h-22, w-32, 14, 3); ctx.fill();
+
+  // ── PUMP VOLUTE (left side) ──
+  const pcx = w*0.32, pcy = h*0.52, pr = 36;
+
+  // Volute casing (slightly D-shaped)
+  const vG = ctx.createRadialGradient(pcx-8, pcy-8, 4, pcx, pcy, pr+6);
+  vG.addColorStop(0, teal); vG.addColorStop(1, dk ? '#065f46' : '#0e7490');
+  ctx.fillStyle = vG;
+  ctx.beginPath(); ctx.arc(pcx, pcy, pr+6, 0, Math.PI*2); ctx.fill();
+  // Inner ring (stuffing box)
+  ctx.fillStyle = dk ? '#0a4d6e' : '#0891b2';
+  ctx.beginPath(); ctx.arc(pcx, pcy, 18, 0, Math.PI*2); ctx.fill();
+  // Impeller suggestion (cross inside)
+  ctx.strokeStyle = dk ? '#22d3ee' : '#bae6fd'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+  for (let a=0; a<Math.PI*2; a+=Math.PI/3) {
+    ctx.beginPath();
+    ctx.moveTo(pcx + 6*Math.cos(a), pcy + 6*Math.sin(a));
+    ctx.lineTo(pcx + 16*Math.cos(a+0.5), pcy + 16*Math.sin(a+0.5));
+    ctx.stroke();
+  }
+  // Casing highlight
+  ctx.fillStyle = 'rgba(255,255,255,.12)';
+  ctx.beginPath(); ctx.arc(pcx-12, pcy-14, 12, 0, Math.PI*2); ctx.fill();
+
+  // Volute discharge flange (tangential outlet at top-right)
+  ctx.fillStyle = steel;
+  ctx.beginPath(); ctx.roundRect(pcx+14, pcy-pr-14, 16, 22, 2); ctx.fill();
+  // Outlet pipe going up
+  ctx.fillStyle = pipe;
+  ctx.fillRect(pcx+18, 10, 8, pcy-pr-14);
+  // Pipe end flange
+  ctx.fillStyle = steel2;
+  ctx.beginPath(); ctx.roundRect(pcx+14, 8, 16, 6, 1); ctx.fill();
+  // Flow arrow hint
+  ctx.fillStyle = dk ? '#34d399' : '#059669';
+  ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('▲', pcx+22, 24);
+
+  // Suction inlet (left side of volute)
+  ctx.fillStyle = pipe;
+  ctx.fillRect(10, pcy-5, pcx-pr-2, 10);
+  ctx.fillStyle = steel2;
+  ctx.beginPath(); ctx.roundRect(8, pcy-8, 7, 16, 1); ctx.fill();
+  // Flow arrow
+  ctx.fillStyle = dk ? '#34d399' : '#059669';
+  ctx.fillText('▶', 20, pcy+4);
+
+  // ── COUPLING (connects pump to motor) ──
+  ctx.fillStyle = steel2;
+  ctx.beginPath(); ctx.roundRect(pcx+pr+6, pcy-8, 14, 16, 2); ctx.fill();
+  // Coupling bolts
+  ctx.fillStyle = steel;
+  [[1,4],[1,12],[11,4],[11,12]].forEach(([dx,dy]) => {
+    ctx.beginPath(); ctx.arc(pcx+pr+7+dx, pcy-7+dy, 2, 0, Math.PI*2); ctx.fill();
+  });
+
+  // ── MOTOR (right side) ──
+  const mx = pcx + pr + 20;
+  const mG = ctx.createLinearGradient(mx, h*0.32, mx, h*0.72);
+  mG.addColorStop(0, motor); mG.addColorStop(1, dk ? '#0f1e2e' : '#1e2d3d');
+  ctx.fillStyle = mG;
+  ctx.beginPath(); ctx.roundRect(mx, h*0.32, w-mx-18, h*0.4, 6); ctx.fill();
+  // Cooling fins on motor
+  ctx.strokeStyle = dk ? '#2a3d50' : '#475569'; ctx.lineWidth = 1.5;
+  for (let i=0; i<7; i++) {
+    const fy = h*0.32 + i*(h*0.4/7);
+    ctx.beginPath(); ctx.moveTo(mx, fy); ctx.lineTo(w-18, fy); ctx.stroke();
+  }
+  // Motor nameplate
+  ctx.fillStyle = dk ? '#1e3a52' : '#0891b2';
+  ctx.beginPath(); ctx.roundRect(mx+10, h*0.42, 50, 24, 3); ctx.fill();
+  ctx.fillStyle = dk ? '#7dd3fc' : '#bae6fd';
+  ctx.font = 'bold 7px monospace'; ctx.textAlign = 'left';
+  ctx.fillText('7.5kW', mx+14, h*0.52);
+  ctx.fillText('1450rpm', mx+14, h*0.58);
+  // Motor shaft (to pump side)
+  ctx.fillStyle = steel;
+  ctx.fillRect(mx-6, pcy-3, 8, 6);
+
+  // Status LED
   const lc = status==='critical'?'#dc2626':status==='warn'?'#f59e0b':'#10b981';
-  ctx.fillStyle = lc; ctx.beginPath(); ctx.arc(w-18,18,7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = lc;
+  ctx.beginPath(); ctx.arc(w-20, 18, 7, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.4)';
+  ctx.beginPath(); ctx.arc(w-23, 15, 3, 0, Math.PI*2); ctx.fill();
 }
 
 // ═══════════════════════════════════════════
